@@ -5,6 +5,7 @@ namespace Tests\Services;
 use App\Services\IUserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class UserServiceTest extends TestCase
@@ -25,7 +26,13 @@ class UserServiceTest extends TestCase
 
         DB::connection('mysql')->delete("DELETE FROM users");
     }
-
+    /*function login(array $request): string;
+    function logout(): void;
+    function register(array $request): ?User;
+    function getUserById(string $id): ?User;
+    function getUserByEmail(string $email): ?User;
+    function isAuthenticated(): bool;
+    function authenticatedUser(): ?User;*/
     public function testRegister()
     {
         $user = $this->user;
@@ -34,5 +41,18 @@ class UserServiceTest extends TestCase
         $registeredOrNull = $this->service->register($user);
 
         $this->assertNotNull($registeredOrNull);
+    }
+
+    public function testLogin()
+    {
+        $user = $this->user;
+        $user['password'] = Hash::make('password');
+        $userOrNull = $this->service->register($user);
+
+        $this->assertNotNull($userOrNull);
+
+        $idLoggedIn = $this->service->login($this->user);
+
+        $this->assertNotEmpty($idLoggedIn);
     }
 }

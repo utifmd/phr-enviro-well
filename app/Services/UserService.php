@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Mapper\IUserMapper;
-use App\Mapper\UserMapper;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +22,9 @@ class UserService implements IUserService
             "email" => $request['email'],
             "password" => $request['password']
         ];
-        return Auth::attempt($login);
+        if(!Auth::attempt($login)) return "";
+
+        return Auth::user()->getAuthIdentifier();
     }
 
     function logout(): void
