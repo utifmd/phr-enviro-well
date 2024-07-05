@@ -11,9 +11,10 @@ use Illuminate\Support\Facades\Log;
 class UserService implements IUserService
 {
     private IUserMapper $mapper;
-    public function __construct()
+    public function __construct(IUserMapper $mapper)
     {
-        $this->mapper = new UserMapper();
+        // $this->mapper = new UserMapper();
+        $this->mapper = $mapper;
     }
 
     function login(array $request): string
@@ -50,7 +51,10 @@ class UserService implements IUserService
 
     function getUserByEmail(string $email): ?User
     {
-        $user = User::query()->where("email", "=", $email)->get();
+        $user = User::query()
+            ->where("email", "=", $email)
+            ->get()
+            ->toArray();
         return $this->mapper->fromArray($user);
     }
 

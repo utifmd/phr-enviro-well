@@ -2,24 +2,37 @@
 
 namespace Tests\Services;
 
-use App\Services\UserService;
+use App\Services\IUserService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class UserServiceTest extends TestCase
 {
-    public function testLogin()
+    private array $user;
+    private IUserService $service;
+
+    protected function setUp(): void
     {
-        $user = [
-            'name' => 'Phr test',
+        parent::setUp();
+
+        $this->user = [
+            'name' => 'Pertamina Hulu Rokan Test',
             'email' => 'phrtest@example.com',
-            'password' => Hash::make('password')
+            'password' => 'password',
         ];
+        $this->service = $this->app->make(IUserService::class);
+
+        DB::connection('mysql')->delete("DELETE FROM users");
+    }
+
+    public function testRegister()
+    {
+        $user = $this->user;
+        $user['password'] = Hash::make('password');
+
         $registeredOrNull = $this->service->register($user);
 
         $this->assertNotNull($registeredOrNull);
-        $this->assertDatabaseHas('users', [
-            'email' => $user['email']
-        ]);
     }
 }

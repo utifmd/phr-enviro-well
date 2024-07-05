@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Mapper\IUserMapper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +11,7 @@ use Tests\TestCase;
 class UserTest extends TestCase
 {
     private array $user;
+    private IUserMapper $mapper;
 
     protected function setUp(): void
     {
@@ -19,6 +20,7 @@ class UserTest extends TestCase
             'name' => 'Pertamina Hulu Rokan Test',
             'email' => 'phrtest@example.com',
         ];
+        $this->mapper = $this->app->make(IUserMapper::class);
 
         DB::connection('mysql')->delete("DELETE FROM users");
     }
@@ -30,8 +32,10 @@ class UserTest extends TestCase
             'email' => $this->user['email'],
             'password' => Hash::make('password')
         ];
-        $user = new User($userRegister);
-        $user->save();
+
+        $this->mapper
+            ->fromArray($userRegister)
+            ->save();
 
         $userLogin = [
             'password' => 'password',
@@ -41,7 +45,6 @@ class UserTest extends TestCase
 
         if($isLoggedIn) {
             $hashedPassword = Auth::user()->getAuthPassword();
-            // Log::debug('password: ' . $hashedPassword);
             self::assertTrue(
                 Hash::check($userLogin['password'], $hashedPassword)
             );
@@ -56,7 +59,9 @@ class UserTest extends TestCase
             'email' => $this->user['email'],
             'password' => Hash::make('password')
         ];
-        User::query()->create($user);
+        $this->mapper
+            ->fromArray($user)
+            ->save();
 
         $this->assertDatabaseHas('users', [
             'email' => $user['email']

@@ -9,8 +9,9 @@ class UserMapper implements IUserMapper
 {
     function fromArray(array $user): User
     {
-        $model = new User();
-        if(isset($user['id']))
+        return /*$model = */ new User($user);
+
+        /*if(isset($user['id']))
             $model->id = $user['id'];
         if(isset($user['email_verified_at']))
             $model->email_verified_at = $user['email_verified_at'];
@@ -21,7 +22,7 @@ class UserMapper implements IUserMapper
 
         $model->name = $user['name'];
         $model->email = $user['email'];
-        return $model;
+        return $model;*/
     }
 
     function fromAuth(?Authenticatable $auth): ?User
