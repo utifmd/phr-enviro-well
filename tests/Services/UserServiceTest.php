@@ -26,33 +26,83 @@ class UserServiceTest extends TestCase
 
         DB::connection('mysql')->delete("DELETE FROM users");
     }
-    /*function login(array $request): string;
-    function logout(): void;
-    function register(array $request): ?User;
-    function getUserById(string $id): ?User;
-    function getUserByEmail(string $email): ?User;
-    function isAuthenticated(): bool;
-    function authenticatedUser(): ?User;*/
+
     public function testRegister()
     {
         $user = $this->user;
-        $user['password'] = Hash::make('password');
+        $user['password'] = Hash::make($user['password']);
 
         $registeredOrNull = $this->service->register($user);
 
         $this->assertNotNull($registeredOrNull);
+        $this->assertSame($user['name'], $registeredOrNull->name);
+        $this->assertSame($user['email'], $registeredOrNull->email);
     }
 
     public function testLogin()
     {
         $user = $this->user;
         $user['password'] = Hash::make('password');
-        $userOrNull = $this->service->register($user);
 
-        $this->assertNotNull($userOrNull);
-
+        $this->service->register($user);
         $idLoggedIn = $this->service->login($this->user);
 
         $this->assertNotEmpty($idLoggedIn);
+    }
+
+    public function testIsAuthenticated()
+    {
+        $user = $this->user;
+        $user['password'] = Hash::make('password');
+
+        $this->service->register($user);
+        $this->service->login($this->user);
+        $isAuthenticated = $this->service->isAuthenticated();
+
+        $this->assertTrue($isAuthenticated);
+    }
+
+    public function testAuthenticatedUser()
+    {
+        $user = $this->user;
+        $user['password'] = Hash::make('password');
+
+        $this->service->register($user);
+        $this->service->login($this->user);
+        $authenticatedUserOrNull = $this->service->authenticatedUser();
+
+        $this->assertNotNull($authenticatedUserOrNull);
+        $this->assertSame($user['name'], $authenticatedUserOrNull->name);
+        $this->assertSame($user['email'], $authenticatedUserOrNull->email);
+    }
+
+    public function testGetUserById()
+    {
+        $user = $this->user;
+        $user['password'] = Hash::make('password');
+
+        $this->service->register($user);
+        $this->service->login($this->user);
+        $authenticatedUserOrNull = $this->service->authenticatedUser();
+        $authIdentifier = $authenticatedUserOrNull->getAuthIdentifier();
+        $userOrNull = $this->service->getUserById($authIdentifier);
+
+        $this->assertNotNull($userOrNull);
+        $this->assertSame($user['name'], $userOrNull->name);
+        $this->assertSame($user['email'], $userOrNull->email);
+    }
+
+    public function testGetUserByEmail()
+    {
+        $user = $this->user;
+        $user['password'] = Hash::make('password');
+
+        $this->service->register($user);
+        $this->service->login($user);
+        $userOrNull = $this->service->getUserByEmail($user['email']);
+
+        $this->assertNotNull($userOrNull);
+        $this->assertSame($user['name'], $userOrNull->name);
+        $this->assertSame($user['email'], $userOrNull->email);
     }
 }

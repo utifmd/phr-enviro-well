@@ -12,17 +12,16 @@ class UserService implements IUserService
     private IUserMapper $mapper;
     public function __construct(IUserMapper $mapper)
     {
-        // $this->mapper = new UserMapper();
         $this->mapper = $mapper;
     }
 
-    function login(array $request): string
+    function login(array $request): ?string
     {
         $login = [
             "email" => $request['email'],
             "password" => $request['password']
         ];
-        if(!Auth::attempt($login)) return "";
+        if(!Auth::attempt($login)) return null;
 
         return Auth::user()->getAuthIdentifier();
     }
@@ -36,6 +35,7 @@ class UserService implements IUserService
     {
         try {
             $user = $this->mapper->fromArray($request);
+
             if (!$user->save()) return null;
 
             return $this->getUserByEmail($request['email']);
@@ -47,16 +47,18 @@ class UserService implements IUserService
 
     function getUserById(string $id): ?User
     {
-        return User::query()->find($id)->get();
+        return User::query()
+            ->find($id)
+            ->get()
+            ->first();
     }
 
     function getUserByEmail(string $email): ?User
     {
-        $user = User::query()
+        return User::query()
             ->where("email", "=", $email)
             ->get()
-            ->toArray();
-        return $this->mapper->fromArray($user);
+            ->first();
     }
 
     function isAuthenticated(): bool
