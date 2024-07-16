@@ -6,6 +6,7 @@ use App\Mapper\IUserMapper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -17,29 +18,27 @@ class UserTest extends TestCase
     {
         parent::setUp();
         $this->user = [
-            'name' => 'Pertamina Hulu Rokan Test',
+            'username' => 'phrtest',
             'email' => 'phrtest@example.com',
         ];
         $this->mapper = $this->app->make(IUserMapper::class);
 
-        DB::connection('mysql')->delete("DELETE FROM users");
+        DB::connection(env('DB_CONNECTION'))->delete("DELETE FROM users");
     }
 
     public function testUserLogin()
     {
-        $userRegister = [
-            'name' => $this->user['name'],
-            'email' => $this->user['email'],
-            'password' => Hash::make('password')
-        ];
+        $user = $this->user;
+        $user['id'] = Str::uuid();
+        $user['password'] = Hash::make('password');
 
         $this->mapper
-            ->fromArray($userRegister)
+            ->fromArray($user)
             ->save();
 
         $userLogin = [
-            'password' => 'password',
-            'email' => $this->user['email']
+            'email' => $user['email'],
+            'password' => 'password'
         ];
         $isLoggedIn = Auth::attempt($userLogin);
 
@@ -54,11 +53,10 @@ class UserTest extends TestCase
 
     public function testUserRegister()
     {
-        $user = [
-            'name' => $this->user['name'],
-            'email' => $this->user['email'],
-            'password' => Hash::make('password')
-        ];
+        $user = $this->user;
+        $user['id'] = Str::uuid();
+        $user['password'] = Hash::make('password');
+
         $this->mapper
             ->fromArray($user)
             ->save();

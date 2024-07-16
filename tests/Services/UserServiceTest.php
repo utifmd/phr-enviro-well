@@ -18,13 +18,13 @@ class UserServiceTest extends TestCase
         parent::setUp();
 
         $this->user = [
-            'name' => 'Pertamina Hulu Rokan Test',
+            'username' => 'phrtest',
             'email' => 'phrtest@example.com',
             'password' => 'password',
         ];
         $this->service = $this->app->make(IUserService::class);
 
-        DB::connection('mysql')->delete("DELETE FROM users");
+        DB::connection(env('DB_CONNECTION'))->delete("DELETE FROM users");
     }
 
     public function testRegister()
@@ -35,7 +35,7 @@ class UserServiceTest extends TestCase
         $registeredOrNull = $this->service->register($user);
 
         $this->assertNotNull($registeredOrNull);
-        $this->assertSame($user['name'], $registeredOrNull->name);
+        $this->assertSame($user['username'], $registeredOrNull->name);
         $this->assertSame($user['email'], $registeredOrNull->email);
     }
 
@@ -72,7 +72,7 @@ class UserServiceTest extends TestCase
         $authenticatedUserOrNull = $this->service->authenticatedUser();
 
         $this->assertNotNull($authenticatedUserOrNull);
-        $this->assertSame($user['name'], $authenticatedUserOrNull->name);
+        $this->assertSame($user['username'], $authenticatedUserOrNull->name);
         $this->assertSame($user['email'], $authenticatedUserOrNull->email);
     }
 
@@ -88,7 +88,7 @@ class UserServiceTest extends TestCase
         $userOrNull = $this->service->getUserById($authIdentifier);
 
         $this->assertNotNull($userOrNull);
-        $this->assertSame($user['name'], $userOrNull->name);
+        $this->assertSame($user['username'], $userOrNull->name);
         $this->assertSame($user['email'], $userOrNull->email);
     }
 
@@ -102,7 +102,7 @@ class UserServiceTest extends TestCase
         $userOrNull = $this->service->getUserByEmail($user['email']);
 
         $this->assertNotNull($userOrNull);
-        $this->assertSame($user['name'], $userOrNull->name);
+        $this->assertSame($user['username'], $userOrNull->name);
         $this->assertSame($user['email'], $userOrNull->email);
     }
 }
