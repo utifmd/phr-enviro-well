@@ -29,7 +29,6 @@ class UserTest extends TestCase
     public function testUserLogin()
     {
         $user = $this->user;
-        $user['id'] = Str::uuid();
         $user['password'] = Hash::make('password');
 
         $this->mapper
@@ -54,7 +53,6 @@ class UserTest extends TestCase
     public function testUserRegister()
     {
         $user = $this->user;
-        $user['id'] = Str::uuid();
         $user['password'] = Hash::make('password');
 
         $this->mapper
