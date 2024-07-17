@@ -15,13 +15,13 @@ class UserService implements IUserService
         $this->mapper = $mapper;
     }
 
-    function login(array $request): ?string
+    function login(array $request, bool $isRemembering = false): ?string
     {
         $login = [
             "email" => $request['email'],
             "password" => $request['password']
         ];
-        if(!Auth::attempt($login)) return null;
+        if(!Auth::attempt($login, $isRemembering)) return null;
 
         return Auth::user()->getAuthIdentifier();
     }
@@ -34,12 +34,12 @@ class UserService implements IUserService
     function register(array $request): ?User
     {
         try {
-            $user = $this->mapper->fromArray($request);
-
-            if (!$user->save()) return null;
-
-            return $this->getUserByEmail($request['email']);
+            $registeredUser = User::query()->create($request);
+            if (is_null($registeredUser['id'])) return null;
+            // event(new Registered(user: $registeredUser));
+            return $this->mapper->fromBuilderOrModel($registeredUser);
         } catch (\Throwable $t) {
+
             Log::debug($t->getMessage());
             return null;
         }
@@ -64,6 +64,14 @@ class UserService implements IUserService
     function isAuthenticated(): bool
     {
         return Auth::check();
+    }
+
+    public function authenticate(array $user): bool
+    {
+        /*
+         * TODO: ensureIsNotRateLimited(); $this->login($user);
+         * */
+        return false;
     }
 
     function authenticatedUser(): ?User

@@ -32,7 +32,7 @@ class UserTest extends TestCase
         $user['password'] = Hash::make('password');
 
         $this->mapper
-            ->fromArray($user)
+            ->fromAndToRawArray($user)
             ->save();
 
         $userLogin = [
@@ -56,7 +56,7 @@ class UserTest extends TestCase
         $user['password'] = Hash::make('password');
 
         $this->mapper
-            ->fromArray($user)
+            ->fromAndToRawArray($user)
             ->save();
 
         $this->assertDatabaseHas('users', [

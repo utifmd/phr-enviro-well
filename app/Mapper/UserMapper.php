@@ -3,13 +3,15 @@
 namespace App\Mapper;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Log;
 
 class UserMapper implements IUserMapper
 {
-    function fromArray(array $user): User
+    function fromAndToRawArray(array $user): User
     {
         return new User($user);
     }
@@ -20,7 +22,7 @@ class UserMapper implements IUserMapper
         if (!$auth) return null;
 
         $user->id = $auth->id;
-        $user->name = $auth->name;
+        $user->username = $auth->username;
         $user->email = $auth->email;
         $user->email_verified_at = $auth->email_verified_at;
         $user->created_at = $auth->created_at;
@@ -36,9 +38,22 @@ class UserMapper implements IUserMapper
         $model->email_verified_at = $user->get('email_verified_at');
         $model->created_at = $user->get('created_at');
         $model->updated_at = $user->get('updated_at');
-        $model->name = $user->get('name');
+        $model->username = $user->get('username');
         $model->email = $user->get('email');
         $model->password = $user->get('password');
+        return $model;
+    }
+
+    function fromBuilderOrModel(Builder|Model $user): User
+    {
+        $model = new User();
+        $model->id = $user['id'];
+        $model->email_verified_at = $user['email_verified_at'];
+        $model->created_at = $user['created_at'];
+        $model->updated_at = $user['updated_at'];
+        $model->username = $user['username'];
+        $model->email = $user['email'];
+        $model->password = $user['password'];
         return $model;
     }
 }
