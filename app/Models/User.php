@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -54,5 +55,12 @@ class User extends Authenticatable
         self::creating(function ($table) {
             $table->id = Str::uuid();
         });
+    }
+
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(
+            Post::class, 'id', 'post_id'
+        );
     }
 }
