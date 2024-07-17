@@ -88,7 +88,7 @@ class UserServiceTest extends TestCase
         $authIdentifier = $authenticatedUserOrNull->getAuthIdentifier();
         $userOrNull = $this->service->getUserById($authIdentifier);
 
-        $this->assertNotNull($userOrNull);
+        $this->assertNotNull($userOrNull->id);
         $this->assertSame($user['username'], $userOrNull->username);
         $this->assertSame($user['email'], $userOrNull->email);
     }

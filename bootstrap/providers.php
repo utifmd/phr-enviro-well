@@ -2,6 +2,6 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\UserMapperProvider::class,
-    App\Providers\UserServiceProvider::class,
+    App\Providers\PhrMapperProvider::class,
+    App\Providers\PhrServiceProvider::class,
 ];

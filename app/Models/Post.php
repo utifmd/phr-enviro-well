@@ -8,6 +8,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
+/**
+ * Class Post
+ *
+ * @property $id
+ * @property $type
+ * @property $title
+ * @property $desc
+ * @property $user_id
+ * @property $user
+ * @property $created_at
+ * @property $updated_at
+ *
+ * @package App
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class Post extends Model
 {
     use HasFactory;
@@ -19,7 +34,6 @@ class Post extends Model
     protected $fillable = [
         "type", "title", "desc", "user_id"
     ];
-
     protected static function booted(): void
     {
         self::creating(function ($table){

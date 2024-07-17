@@ -9,6 +9,21 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
+/**
+ * Class Post
+ *
+ * @property $id
+ * @property $username
+ * @property $email
+ * @property $password
+ * @property $remember_token
+ * @property $email_verified_at
+ * @property $created_at
+ * @property $updated_at
+ *
+ * @package App
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;

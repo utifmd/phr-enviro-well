@@ -47,9 +47,14 @@ class UserService implements IUserService
 
     function getUserById(string $id): ?User
     {
-        return User::query()
-            ->find($id)
-            ->get()
+        try {
+            $user = User::query()
+                ->find($id)
+                ->get();
+        } catch (\Throwable $t){
+            return null;
+        }
+        return $user
             ->first();
     }
 

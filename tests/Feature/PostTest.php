@@ -37,7 +37,6 @@ class PostTest extends TestCase
     {
         $this->model->save();
         $firstPost = Post::query()->where('id', 'LIKE', '%%')->get()->first();
-        /*Log::debug('testGetRelatedPostSuccess: '.json_encode($firstPost->user));*/
 
         self::assertSame($this->model->type, $firstPost->type);
         self::assertSame($this->model->title, $firstPost->title);
