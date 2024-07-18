@@ -17,9 +17,10 @@ class UserServiceTest extends TestCase
     {
         parent::setUp();
 
+        $email = 'phrtest@example.com';
         $this->user = [
-            'username' => 'phrtest',
-            'email' => 'phrtest@example.com',
+            'username' => explode("@", $email, 1)[0],
+            'email' => $email,
             'password' => 'password',
             'remember' => false,
         ];
@@ -45,7 +46,10 @@ class UserServiceTest extends TestCase
         $user['password'] = Hash::make('password');
 
         $this->service->register($user);
-        $idLoggedIn = $this->service->login($this->user);
+        $idLoggedIn = $this->service->login([
+            'username' => $this->user['username'],
+            'password' => $this->user['password'],
+        ]);
 
         $this->assertNotNull($idLoggedIn);
         $this->assertNotEmpty($idLoggedIn);

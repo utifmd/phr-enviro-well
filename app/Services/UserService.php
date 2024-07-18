@@ -17,12 +17,18 @@ class UserService implements IUserService
 
     function login(array $request, bool $isRemembering = false): ?string
     {
-        $login = [
-            "email" => $request['email'],
+        $login1 = [
+            "username" => $request['username'],
             "password" => $request['password']
         ];
-        if(!Auth::attempt($login, $isRemembering)) return null;
+        $login2 = [
+            "email" => $request['username'],
+            "password" => $request['password']
+        ];
+        if(!(Auth::attempt($login1) || Auth::attempt($login2))) return null;
 
+        /*Auth::loginUsingId($userId);
+        return $userId;*/
         return Auth::user()->getAuthIdentifier();
     }
 
