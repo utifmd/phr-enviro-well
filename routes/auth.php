@@ -5,18 +5,28 @@ use App\Livewire\Posts\Create;
 use App\Livewire\Posts\Edit;
 use App\Livewire\Posts\Index;
 use App\Livewire\Posts\Show;
+use App\Livewire\Users\Login;
+use App\Livewire\Users\Register;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::middleware('guest')->group(function () {
-    Volt::route('/', 'pages.auth.register')
+
+    Route::get('login', Login::class)
+        ->name('login');
+
+    Route::get('register', Register::class)
+        ->name('register');
+
+
+    /*Volt::route('/', 'pages.auth.register')
         ->name('register');
 
     Volt::route('register', 'pages.auth.register')
         ->name('register');
 
     Volt::route('login', 'pages.auth.login')
-        ->name('login');
+        ->name('login');*/
 
     Volt::route('forgot-password', 'pages.auth.forgot-password')
         ->name('password.request');
@@ -26,6 +36,18 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    /*Route::get('/users', \App\Livewire\Users\Index::class)
+        ->name('users.index');
+
+    Route::get('/users/create', \App\Livewire\Users\Create::class)
+        ->name('users.create');
+
+    Route::get('/users/show/{user}', \App\Livewire\Users\Show::class)
+        ->name('users.show');
+
+    Route::get('/users/update/{user}', \App\Livewire\Users\Edit::class)
+        ->name('users.edit');*/
+
     Volt::route('verify-email', 'pages.auth.verify-email')
         ->name('verification.notice');
 

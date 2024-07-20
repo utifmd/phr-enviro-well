@@ -2,24 +2,40 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Livewire\Attributes\Validate;
 use Livewire\Form;
+use Illuminate\Validation\Rules\Password;
 
 class LoginForm extends Form
 {
-    #[Validate('required|string|email')]
-    public string $email = '';
+    public ?User $userModel;
 
-    #[Validate('required|string')]
-    public string $password = '';
+    public ?string $email;
+    public ?string $password;
+    public ?bool $remember;
 
-    #[Validate('boolean')]
-    public bool $remember = false;
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'string', 'lowercase', 'max:255', 'unique:' . User::class],
+            'password' => ['required', 'string', Password::defaults()],
+            'remember' => ['boolean']
+        ];
+    }
+
+    public function setUserModel(User $userModel): void
+    {
+        $this->userModel = $userModel;
+
+        $this->email = $userModel->email;
+        $this->password = $userModel->password;
+        $this->remember = false;
+    }
 
     /**
      * Attempt to authenticate the request's credentials.

@@ -19,7 +19,7 @@ class UserServiceTest extends TestCase
 
         $email = 'phrtest@example.com';
         $this->user = [
-            'username' => explode("@", $email, 1)[0],
+            'username' => explode("@", $email)[0],
             'email' => $email,
             'password' => 'password',
             'remember' => false,

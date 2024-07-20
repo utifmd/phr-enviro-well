@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,14 +9,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
 /**
- * Class Post
+ * Class User
  *
  * @property $id
  * @property $username
  * @property $email
+ * @property $email_verified_at
  * @property $password
  * @property $remember_token
- * @property $email_verified_at
  * @property $created_at
  * @property $updated_at
  *
@@ -36,6 +35,8 @@ class User extends Authenticatable
     protected $keyType = 'string';
 
     public $incrementing = false;
+
+    protected $perPage = 2;
 
     protected $fillable = [
         'username',
@@ -78,4 +79,5 @@ class User extends Authenticatable
             Post::class, 'id', 'post_id'
         );
     }
+
 }
