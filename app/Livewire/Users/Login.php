@@ -4,6 +4,7 @@ namespace App\Livewire\Users;
 
 use App\Livewire\Forms\LoginForm;
 use App\Models\User;
+use App\Services\IUserService;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -19,7 +20,7 @@ class Login extends Component
 
     public function login(): void
     {
-        $validateArr = $this->validate();
+        $this->validate();
 
         $this->form->authenticate();
 

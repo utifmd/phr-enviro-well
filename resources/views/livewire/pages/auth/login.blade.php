@@ -8,6 +8,7 @@
             <x-input-label for="email" :value="__('Email or username')" />
             <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="text" name="email" required autofocus autocomplete="email" />
             <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+            <x-input-error :messages="$errors->get('form.username')" class="mt-2" />
         </div>
 
         <!-- Password -->
