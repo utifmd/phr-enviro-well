@@ -22,7 +22,7 @@ class LoginForm extends Form
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'lowercase', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'max:255'],
             'password' => ['required', 'string', Password::defaults()],
             'remember' => ['boolean']
         ];

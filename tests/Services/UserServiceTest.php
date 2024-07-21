@@ -3,6 +3,7 @@
 namespace Tests\Services;
 
 use App\Services\IUserService;
+use App\Utils\UserRoleEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +23,7 @@ class UserServiceTest extends TestCase
             'username' => explode("@", $email)[0],
             'email' => $email,
             'password' => 'password',
+            'role' => UserRoleEnum::USER_GUEST_ROLE->value,
             'remember' => false,
         ];
         $this->service = $this->app->make(IUserService::class);

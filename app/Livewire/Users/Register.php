@@ -4,6 +4,7 @@ namespace App\Livewire\Users;
 
 use App\Livewire\Forms\RegisterForm;
 use App\Models\User;
+use App\Utils\UserRoleEnum;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +15,7 @@ class Register extends Component
 {
     public RegisterForm $form;
 
-    public function mount(User $user)
+    public function mount(User $user): void
     {
         $this->form->setUserModel($user);
     }
@@ -23,6 +24,7 @@ class Register extends Component
     {
         $validated = $this->validate();
 
+        $validated['role'] = UserRoleEnum::USER_GUEST_ROLE->value;
         $validated['username'] = explode('@', $validated['email'])[0];
         $validated['password'] = Hash::make($validated['password']);
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Mapper\IUserMapper;
+use App\Utils\UserRoleEnum;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +21,7 @@ class UserTest extends TestCase
         $this->user = [
             'username' => 'phrtest',
             'email' => 'phrtest@example.com',
+            'role' => UserRoleEnum::USER_GUEST_ROLE->value,
         ];
         $this->mapper = $this->app->make(IUserMapper::class);
 

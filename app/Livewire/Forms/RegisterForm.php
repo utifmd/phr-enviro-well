@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Models\User;
+use App\Utils\PostTypeEnum;
 use Livewire\Form;
 use Illuminate\Validation\Rules\Password;
 
@@ -14,6 +15,7 @@ class RegisterForm extends Form
     public ?string $username;
     public ?string $email;
     public ?string $password;
+    public ?string $role;
     public ?string $password_confirmation;
 
     public function rules(): array
@@ -21,7 +23,8 @@ class RegisterForm extends Form
         return [
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'. User::class],
             'password' => ['required', 'string', 'confirmed', Password::defaults()],
-            'username' => ['string', 'max:255']
+            'username' => ['string', 'max:255'],
+            'role' => ['string']
         ];
     }
     public function setUserModel(User $userModel): void
@@ -30,6 +33,7 @@ class RegisterForm extends Form
 
         $this->email = $this->userModel->email;
         $this->username = $this->userModel->username ?? "";
+        $this->role = $this->userModel->role ?? "";
         $this->password = $this->userModel->password;
         $this->password_confirmation = $this->userModel->password_confirmation;
     }
