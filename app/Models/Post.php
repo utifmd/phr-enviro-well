@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
@@ -43,5 +44,17 @@ class Post extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+    public function uploadedUrls(): HasMany
+    {
+        return $this->hasMany(
+            UploadedUrl::class //, 'id', 'work_order_id'
+        );
+    }
+    public function workOrders(): HasMany
+    {
+        return $this->hasMany(
+            WorkOrder::class //, 'id', 'work_order_id'
+        );
     }
 }
