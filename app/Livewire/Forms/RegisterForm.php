@@ -3,13 +3,19 @@
 namespace App\Livewire\Forms;
 
 use App\Models\User;
+use App\Services\IUserService;
 use App\Utils\PostTypeEnum;
+use App\Utils\UserRoleEnum;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Form;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterForm extends Form
 {
     public ?User $userModel;
+    private IUserService $userService;
 
     public ?string $id;
     public ?string $username;
@@ -17,6 +23,11 @@ class RegisterForm extends Form
     public ?string $password;
     public ?string $role;
     public ?string $password_confirmation;
+
+    public function boot(IUserService $service): void
+    {
+        $this->userService = $service;
+    }
 
     public function rules(): array
     {
@@ -36,5 +47,14 @@ class RegisterForm extends Form
         $this->role = $this->userModel->role ?? "";
         $this->password = $this->userModel->password;
         $this->password_confirmation = $this->userModel->password_confirmation;
+    }
+
+    public function submit(): void
+    {
+        $this->role = UserRoleEnum::USER_GUEST_ROLE->value;
+        $this->username = explode('@', $this->email)[0];
+        $this->password = Hash::make($this->password);
+
+        $this->userService->register($this->all());
     }
 }

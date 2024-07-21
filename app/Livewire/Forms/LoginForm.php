@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Form;
@@ -23,6 +24,11 @@ class LoginForm extends Form
     public ?string $password;
     public ?bool $remember;
 
+    public function boot(IUserService $service): void
+    {
+        $this->userService = $service;
+    }
+
     public function rules(): array
     {
         return [
@@ -31,11 +37,6 @@ class LoginForm extends Form
             'username' => ['string'],
             'remember' => ['boolean']
         ];
-    }
-
-    public function boot(IUserService $service): void
-    {
-        $this->userService = $service;
     }
 
     public function setUserModel(User $userModel): void
@@ -68,6 +69,7 @@ class LoginForm extends Form
             ]);
         }
         // RateLimiter::clear($this->throttleKey());
+        Session::regenerate();
     }
 
     /**

@@ -22,16 +22,12 @@ class Register extends Component
 
     public function register(): void
     {
-        $validated = $this->validate();
-
-        $validated['role'] = UserRoleEnum::USER_GUEST_ROLE->value;
-        $validated['username'] = explode('@', $validated['email'])[0];
-        $validated['password'] = Hash::make($validated['password']);
-
-        event(new Registered($user = User::create($validated)));
-
-        Auth::login($user);
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        $this->validate();
+        $this->form->submit();
+        $this->redirect(
+            route('dashboard', absolute: false),
+            navigate: true
+        );
     }
 
     #[Layout('layouts.guest')]
