@@ -3,15 +3,17 @@
 namespace Tests\Models;
 
 use App\Models\Post;
-use App\Models\UploadedUrl;
 use App\Models\User;
+use App\Models\WorkOrder;
 use App\Utils\PostTypeEnum;
 use App\Utils\UserRoleEnum;
+use App\Utils\WorkOrderShiftEnum;
+use App\Utils\WorkOrderStatusEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class UploadedUrlTest extends TestCase
+class WorkOrderTest extends TestCase
 {
     private ?array $user;
     private ?string $userId;
@@ -25,11 +27,13 @@ class UploadedUrlTest extends TestCase
         foreach (['users', 'posts', 'work_orders'] as $item) {
             DB::connection(env('DB_CONNECTION'))->delete("DELETE FROM ". $item);
         }
-        $this->userId = $this->createUser();
-        $this->postId = $this->createPost();
-    }
+        $userId = $this->handleNewUser();
+        $this->userId = $userId;
 
-    private function createUser(): string
+        $postId = $this->handleNewPost();
+        $this->postId = $postId;
+    }
+    private function handleNewUser(): string
     {
         $this->user = [
             'email' => 'phrtest@example.com',
@@ -40,7 +44,7 @@ class UploadedUrlTest extends TestCase
         $model = User::query()->create($this->user);
         return $model['id'];
     }
-    private function createPost(): string
+    private function handleNewPost(): string
     {
         $this->post = [
             'type' => PostTypeEnum::POST_TILE_TYPE->value,
@@ -53,17 +57,24 @@ class UploadedUrlTest extends TestCase
     }
     public function testPostRelatedTable()
     {
-        $uploadedUrl = [
-            'url' => 'https://via.placeholder.com/150',
-            'path' => './public/images/upload/150.png',
-            'post_id' => $this->postId
+        $workOrder = [
+            'shift' => WorkOrderShiftEnum::NIGHT->value,
+            'well_number' => 'P_PETA24_30 (Petani 208)',
+            'wbs_number' => 'PTO2/402/3230921DR',
+            'is_rig' => false,
+            'status' => WorkOrderStatusEnum::STATUS_SENT->value,
+            'post_id' => $this->postId,
         ];
-        UploadedUrl::query()->create($uploadedUrl);
+        WorkOrder::query()->create($workOrder);
         $firstPost = Post::query()->get()->first();
 
-        foreach ($firstPost->uploadedUrls as $udl) {
-            self::assertSame($uploadedUrl['url'], $udl['url']);
-            self::assertSame($uploadedUrl['path'], $udl['path']);
+        foreach ($firstPost->workOrders as $wo) {
+            self::assertSame($workOrder['shift'], $wo['shift']);
+            self::assertSame($workOrder['well_number'], $wo['well_number']);
+            self::assertSame($workOrder['wbs_number'], $wo['wbs_number']);
+            self::assertSame($workOrder['is_rig'], $wo['is_rig']);
+            self::assertSame($workOrder['status'], $wo['status']);
+            self::assertSame($this->postId, $wo['post_id']);
         }
     }
 }

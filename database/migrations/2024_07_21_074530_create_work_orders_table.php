@@ -22,7 +22,7 @@ return new class extends Migration
                 ->map(function ($case) { return $case->value; })
                 ->toArray();
 
-            $table->uuid()->primary()->unique();
+            $table->uuid('id')->primary()->unique();
             $table->enum('shift', $shiftAllowed);
             $table->string('well_number');
             $table->string('wbs_number');
