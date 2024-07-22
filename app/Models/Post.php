@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
  * @property $desc
  * @property $user_id
  * @property $user
+ * @property $uploadUrls
+ * @property $workOrders
  * @property $created_at
  * @property $updated_at
  *

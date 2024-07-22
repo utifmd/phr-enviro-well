@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property $url
  * @property $path
  * @property $post_id
+ * @property $created_at
+ * @property $updated_at
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
