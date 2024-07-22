@@ -12,4 +12,9 @@ interface IPostRepository
     function pagedPostBySize(int $page, int $size): Collection;
     function updatePost(string $post_id, array $request): ?Post;
     function removePost(string $post_id): bool;
+
+    function beginTransaction(): void;
+    function commitTransaction(): void;
+
+    function rollback(?int $toLevel): void;
 }
