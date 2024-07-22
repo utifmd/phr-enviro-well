@@ -3,7 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Models\User;
-use App\Services\IUserService;
+use App\Repository\IUserRepository;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -17,16 +17,16 @@ use Illuminate\Validation\Rules\Password;
 class LoginForm extends Form
 {
     public ?User $userModel;
-    private IUserService $userService;
+    private IUserRepository $userRepository;
 
     public ?string $email;
     public ?string $username;
     public ?string $password;
     public ?bool $remember;
 
-    public function boot(IUserService $service): void
+    public function boot(IUserRepository $repository): void
     {
-        $this->userService = $service;
+        $this->userRepository = $repository;
     }
 
     public function rules(): array
@@ -60,7 +60,7 @@ class LoginForm extends Form
         $this->username = $this->email;
 
         $request = $this->only(['email', 'username', 'password']);
-        $login = $this->userService->login($request, $this->remember);
+        $login = $this->userRepository->login($request, $this->remember);
         if (is_null($login)) {
             // RateLimiter::hit($this->throttleKey());
 

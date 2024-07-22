@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Repository;
 
 use App\Mapper\IPostMapper;
 use App\Models\Post;
 use Illuminate\Support\Collection;
 
-class PostService implements IPostService
+class PostRepository implements IPostRepository
 {
     private IPostMapper $mapper;
 

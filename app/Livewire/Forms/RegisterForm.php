@@ -3,7 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Models\User;
-use App\Services\IUserService;
+use App\Repository\IUserRepository;
 use App\Utils\PostTypeEnum;
 use App\Utils\UserRoleEnum;
 use Illuminate\Auth\Events\Registered;
@@ -15,7 +15,7 @@ use Illuminate\Validation\Rules\Password;
 class RegisterForm extends Form
 {
     public ?User $userModel;
-    private IUserService $userService;
+    private IUserRepository $userRepository;
 
     public ?string $id;
     public ?string $username;
@@ -24,9 +24,9 @@ class RegisterForm extends Form
     public ?string $role;
     public ?string $password_confirmation;
 
-    public function boot(IUserService $service): void
+    public function boot(IUserRepository $repository): void
     {
-        $this->userService = $service;
+        $this->userRepository = $repository;
     }
 
     public function rules(): array
@@ -55,6 +55,6 @@ class RegisterForm extends Form
         $this->username = explode('@', $this->email)[0];
         $this->password = Hash::make($this->password);
 
-        $this->userService->register($this->all());
+        $this->userRepository->register($this->all());
     }
 }

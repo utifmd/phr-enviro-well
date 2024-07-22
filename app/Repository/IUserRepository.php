@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Repository;
 
 use App\Models\User;
 
-interface IUserService
+interface IUserRepository
 {
     function register(array $request): ?User;
     function login(array $request, bool $isRemembering): ?string;

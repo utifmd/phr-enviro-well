@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Repository;
 
 use App\Models\UploadedUrl;
 use Illuminate\Support\Collection;
 
-interface IUploadedUrlService
+interface IUploadedUrlRepository
 {
     function addUploadedUrl(array $request): ?UploadedUrl;
     function getUploadedUrlById(string $post_id): Collection;

@@ -1,18 +1,18 @@
 <?php
 
-namespace Tests\Services;
+namespace Tests\Repository;
 
-use App\Services\IUserService;
+use App\Repository\IUserRepository;
 use App\Utils\UserRoleEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
-class UserServiceTest extends TestCase
+class UserRepositoryTest extends TestCase
 {
     private array $user;
-    private IUserService $service;
+    private IUserRepository $repository;
 
     protected function setUp(): void
     {
@@ -26,7 +26,7 @@ class UserServiceTest extends TestCase
             'role' => UserRoleEnum::USER_GUEST_ROLE->value,
             'remember' => false,
         ];
-        $this->service = $this->app->make(IUserService::class);
+        $this->repository = $this->app->make(IUserRepository::class);
 
         DB::connection(env('DB_CONNECTION'))->delete("DELETE FROM users");
     }
@@ -35,7 +35,7 @@ class UserServiceTest extends TestCase
     {
         $user = $this->user;
         $user['password'] = Hash::make($user['password']);
-        $registeredOrNull = $this->service->register($user);
+        $registeredOrNull = $this->repository->register($user);
 
         $this->assertNotNull($registeredOrNull);
         $this->assertSame($user['username'], $registeredOrNull->username);
@@ -47,8 +47,8 @@ class UserServiceTest extends TestCase
         $user = $this->user;
         $user['password'] = Hash::make('password');
 
-        $this->service->register($user);
-        $idLoggedIn = $this->service->login([
+        $this->repository->register($user);
+        $idLoggedIn = $this->repository->login([
             'username' => $this->user['username'],
             'password' => $this->user['password'],
         ]);
@@ -62,9 +62,9 @@ class UserServiceTest extends TestCase
         $user = $this->user;
         $user['password'] = Hash::make('password');
 
-        $this->service->register($user);
-        $this->service->login($this->user);
-        $isAuthenticated = $this->service->isAuthenticated();
+        $this->repository->register($user);
+        $this->repository->login($this->user);
+        $isAuthenticated = $this->repository->isAuthenticated();
 
         $this->assertTrue($isAuthenticated);
     }
@@ -74,9 +74,9 @@ class UserServiceTest extends TestCase
         $user = $this->user;
         $user['password'] = Hash::make('password');
 
-        $this->service->register($user);
-        $this->service->login($this->user);
-        $authenticatedUserOrNull = $this->service->authenticatedUser();
+        $this->repository->register($user);
+        $this->repository->login($this->user);
+        $authenticatedUserOrNull = $this->repository->authenticatedUser();
 
         $this->assertNotNull($authenticatedUserOrNull);
         $this->assertSame($user['username'], $authenticatedUserOrNull->username);
@@ -88,11 +88,11 @@ class UserServiceTest extends TestCase
         $user = $this->user;
         $user['password'] = Hash::make('password');
 
-        $this->service->register($user);
-        $this->service->login($this->user);
-        $authenticatedUserOrNull = $this->service->authenticatedUser();
+        $this->repository->register($user);
+        $this->repository->login($this->user);
+        $authenticatedUserOrNull = $this->repository->authenticatedUser();
         $authIdentifier = $authenticatedUserOrNull->getAuthIdentifier();
-        $userOrNull = $this->service->getUserById($authIdentifier);
+        $userOrNull = $this->repository->getUserById($authIdentifier);
 
         $this->assertNotNull($userOrNull->id);
         $this->assertSame($user['username'], $userOrNull->username);
@@ -104,9 +104,9 @@ class UserServiceTest extends TestCase
         $user = $this->user;
         $user['password'] = Hash::make('password');
 
-        $this->service->register($user);
-        $this->service->login($user);
-        $userOrNull = $this->service->getUserByEmail($user['email']);
+        $this->repository->register($user);
+        $this->repository->login($user);
+        $userOrNull = $this->repository->getUserByEmail($user['email']);
 
         $this->assertNotNull($userOrNull);
         $this->assertSame($user['username'], $userOrNull->username);

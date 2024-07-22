@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Repository;
 
 use App\Models\Post;
 use Illuminate\Support\Collection;
 
-interface IPostService
+interface IPostRepository
 {
     function addPost(array $request): ?Post;
     function getPostById(string $post_id): ?Post;

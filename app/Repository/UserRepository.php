@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Repository;
 
 use App\Mapper\IUserMapper;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class UserService implements IUserService
+class UserRepository implements IUserRepository
 {
     private IUserMapper $mapper;
     public function __construct(IUserMapper $mapper)
