@@ -4,70 +4,38 @@
     </h2>
 </x-slot>
 
-<div class="py-12">
-    <div class="max-w-full mx-auto sm:px-6 lg:px-8 space-y-6">
-        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-            <div class="w-full">
-                <div class="sm:flex sm:items-center">
-                    <div class="sm:flex-auto">
-                        <h1 class="text-base font-semibold leading-6 text-gray-900">{{ __('Posts') }}</h1>
-                        <p class="mt-2 text-sm text-gray-700">A list of all the {{ __('Posts') }}.</p>
-                    </div>
-                    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                        <a type="button" wire:navigate href="{{ route('posts.create') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add new</a>
-                    </div>
-                </div>
-
-                <div class="flow-root">
-                    <div class="mt-8 overflow-x-auto">
-                        <div class="inline-block min-w-full py-2 align-middle">
-                            <table class="w-full divide-y divide-gray-300">
-                                <thead>
-                                <tr>
-                                    <th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">No</th>
-                                    
-									<th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Type</th>
-									<th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Title</th>
-									<th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Desc</th>
-									<th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">User Id</th>
-
-                                    <th scope="col" class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"></th>
-                                </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white">
-                                @foreach ($posts as $post)
-                                    <tr class="even:bg-gray-50" wire:key="{{ $post->id }}">
-                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-900">{{ ++$i }}</td>
-                                        
-										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $post->type }}</td>
-										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $post->title }}</td>
-										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $post->desc }}</td>
-										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $post->user_id }}</td>
-
-                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                                            <a wire:navigate href="{{ route('posts.show', $post->id) }}" class="text-gray-600 font-bold hover:text-gray-900 mr-2">{{ __('Show') }}</a>
-                                            <a wire:navigate href="{{ route('posts.edit', $post->id) }}" class="text-indigo-600 font-bold hover:text-indigo-900  mr-2">{{ __('Edit') }}</a>
-                                            <button
-                                                class="text-red-600 font-bold hover:text-red-900"
-                                                type="button"
-                                                wire:click="delete({{ $post->id }})"
-                                                wire:confirm="Are you sure you want to delete?"
-                                            >
-                                                {{ __('Delete') }}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-
-                            <div class="mt-4 px-4">
-                                {!! $posts->withQueryString()->links() !!}
-                            </div>
+<div class="flex-col py-12">
+    <div class="w-full px-6">
+        <a type="button" wire:navigate href="{{ route('posts.create') }}"
+           class="bg-white shadow text-gray-800 hover:bg-gray-400 font-bold py-2 px-4 rounded inline-flex items-center">
+            <span class="fill-current mr-2 material-symbols-outlined">add</span>
+            <span>Add New</span>
+        </a>
+    </div>
+    <div class="flex flex-wrap p-6 gap-3 grid-cols-3">
+        @foreach($posts as $i => $post)
+            <div class="p-4 sm:p-8 shadow sm:rounded-lg bg-white">
+                <div class="flex flex-col">
+                    <h1 class="font-semibold leading-6 text-gray-900">{{ $post->title }}</h1>
+                    <p class="mt-2 text-sm text-gray-700">{{ ++$i }}. {{ $post->desc }}</p>
+                    <dl class="divide-y mt-6 divide-gray-100">
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">Well Number</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ $post->workOrders[0]['well_number'] ?? 'NA' }}</dd>
                         </div>
-                    </div>
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                            <dt class="text-sm font-medium leading-6 text-gray-900">WBS Number</dt>
+                            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ $post->workOrders[0]['wbs_number'] ?? 'NA' }}</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div class="w-fit text-right">
+                    <a class="shadow p-6 py-2 rounded text-gray-600 font-bold hover:text-gray-900 mr-2" wire:navigate href="{{ route('posts.show', $post->id) }}">{{ __('Show') }}</a>
                 </div>
             </div>
+        @endforeach
+        <div class="mt-4 px-4">
+            {!! $posts->withQueryString()->links() !!}
         </div>
     </div>
 </div>

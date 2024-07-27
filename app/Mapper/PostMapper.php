@@ -26,7 +26,7 @@ class PostMapper implements IPostMapper
         $model->created_at = $post->get('created_at');
         $model->updated_at = $post->get('updated_at');
 
-        $model->uploadUrls = $post->get('uploadUrls') ?? [];
+        $model->uploadedUrls = $post->get('uploadedUrls') ?? [];
         $model->workOrders = $post->get('workOrders') ?? [];
         $model->user = $post->get('user') ?? null;
         return $model;
@@ -43,7 +43,7 @@ class PostMapper implements IPostMapper
         $post->created_at = $model['created_at'];
         $post->updated_at = $model['updated_at'];
 
-        $post->uploadUrls = $model['uploadUrls'] ?? [];
+        $post->uploadedUrls = $model['uploadedUrls'] ?? [];
         $post->workOrders = $model['workOrders'] ?? [];
         $post->user = $model['user'] ?? null;
         return $post;

@@ -2,20 +2,20 @@
 
 namespace App\Providers;
 
-use App\Service\IPostService;
-use App\Service\PostService;
+use App\Service\IWellService;
+use App\Service\WellService;
 use Illuminate\Support\ServiceProvider;
 
 class PhrServiceProvider extends ServiceProvider
 {
     public array $singletons = [
-        IPostService::class => PostService::class
+        IWellService::class => WellService::class
     ];
 
     public function provides(): array
     {
         return [
-            IPostService::class
+            IWellService::class
         ];
     }
 

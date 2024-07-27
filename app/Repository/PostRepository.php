@@ -4,9 +4,10 @@ namespace App\Repository;
 
 use App\Mapper\IPostMapper;
 use App\Models\Post;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PostRepository implements IPostRepository
 {
@@ -26,20 +27,27 @@ class PostRepository implements IPostRepository
         return $post;
     }
 
-    function getPostById(string $post_id): ?Post
+    function getPostById(string $postId): ?Post
     {
         try {
-            $post = Post::query()->find($post_id)->get();
-        } catch (\Throwable $t) {
+            $post = Post::query()->find($postId)->get();
+        } catch (Throwable $t) {
             Log::error($t->getMessage());
             return null;
         }
         return $post->first();
     }
 
-    function pagedPostBySize(int $page, int $size): Collection
+    function pagedPostBySize(?int $page = null, ?int $size = null): LengthAwarePaginator
     {
-        return collect();
+        return Post::query()->paginate(
+            perPage: $size, page: $page
+        );
+    }
+
+    public function pagedPostByUserId(string $userId, ?int $page = null): LengthAwarePaginator
+    {
+        return Post::query()->where('user_id', '=', $userId)->paginate();
     }
 
     function updatePost(string $post_id, array $request): ?Post
@@ -54,7 +62,7 @@ class PostRepository implements IPostRepository
                 ->get()
                 ->first();
 
-        } catch (\Throwable $t){
+        } catch (Throwable $t){
             Log::error($t->getMessage());
             return null;
         }
@@ -65,7 +73,7 @@ class PostRepository implements IPostRepository
         try {
             $model = Post::query()->find($post_id);
             return $model->delete();
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             Log::error($t->getMessage());
             return false;
         }

@@ -69,4 +69,16 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/posts/update/{post}', Edit::class)
         ->name('posts.edit');
+
+    Route::get('/well-masters', \App\Livewire\WellMasters\Index::class)
+        ->name('well-masters.index');
+
+    Route::get('/well-masters/create', \App\Livewire\WellMasters\Create::class)
+        ->name('well-masters.create');
+
+    Route::get('/well-masters/show/{wellMaster}', \App\Livewire\WellMasters\Show::class)
+        ->name('well-masters.show');
+
+    Route::get('/well-masters/update/{wellMaster}', \App\Livewire\WellMasters\Edit::class)
+        ->name('well-masters.edit');
 });

@@ -3,16 +3,29 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Post;
+use App\Models\UploadedUrl;
+use App\Models\User;
+use App\Models\WorkOrder;
+use App\Repository\IUserRepository;
+use Illuminate\Support\Collection;
 use Livewire\Form;
 
 class PostForm extends Form
 {
     public ?Post $postModel;
-    
+    private ?User $user;
+    private ?Collection $workOrders;
+    private ?Collection $uploadedUrls;
+
     public $type = '';
     public $title = '';
     public $desc = '';
     public $user_id = '';
+
+    public function booted(IUserRepository $repository): void
+    {
+        $this->user = $repository->authenticatedUser();
+    }
 
     public function rules(): array
     {
@@ -27,11 +40,24 @@ class PostForm extends Form
     public function setPostModel(Post $postModel): void
     {
         $this->postModel = $postModel;
-        
+
         $this->type = $this->postModel->type;
         $this->title = $this->postModel->title;
         $this->desc = $this->postModel->desc;
         $this->user_id = $this->postModel->user_id;
+    }
+
+    public function setRequestPostModel(Post $postModel): void
+    {
+        $this->setPostModel($postModel);
+        $this->user_id = $this->user->id;
+    }
+    public function setResponsePostModel(Post $postModel): void
+    {
+        $this->setPostModel($postModel);
+        $this->workOrders = $postModel->workOrders;
+        $this->uploadedUrls = $postModel->uploadedUrls;
+        $this->user = $postModel->user;
     }
 
     public function store(): void

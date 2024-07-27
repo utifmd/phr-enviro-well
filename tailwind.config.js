@@ -13,9 +13,11 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                colors: {
+                    'maindarkblue': "#061C23",
+                }
             },
         },
     },
-
     plugins: [forms],
 };

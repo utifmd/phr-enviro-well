@@ -13,7 +13,7 @@ class Show extends Component
 
     public function mount(Post $post)
     {
-        $this->form->setPostModel($post);
+        $this->form->setResponsePostModel($post);
     }
 
     #[Layout('layouts.app')]

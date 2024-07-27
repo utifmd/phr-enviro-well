@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
  * @property $desc
  * @property $user_id
  * @property $user
- * @property $uploadUrls
+ * @property $uploadedUrls
  * @property $workOrders
  * @property $created_at
  * @property $updated_at
@@ -32,6 +32,8 @@ class Post extends Model
     protected $keyType = 'string';
 
     public $incrementing = false;
+
+    protected $perPage = 2;
 
     protected $fillable = [
         "type", "title", "desc", "user_id"

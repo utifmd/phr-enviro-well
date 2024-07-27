@@ -3,7 +3,7 @@
 namespace Tests\Service;
 
 use App\Models\User;
-use App\Service\IPostService;
+use App\Service\IWellService;
 use App\Utils\PostTypeEnum;
 use App\Utils\UserRoleEnum;
 use App\Utils\WorkOrderShiftEnum;
@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class PostServiceTest extends TestCase
 {
-    private IPostService $service;
+    private IWellService $service;
     private array $post;
     private array $workOrder;
     private array $uploadedUrl;
@@ -25,7 +25,7 @@ class PostServiceTest extends TestCase
         foreach (['uploaded_urls', 'posts', 'work_orders', 'users'] as $item) {
             DB::connection(env('DB_CONNECTION'))->delete("DELETE FROM " .$item);
         }
-        $this->service = $this->app->make(IPostService::class);
+        $this->service = $this->app->make(IWellService::class);
         $this->user = [
             'email' => 'phrtest@example.com',
             'username' => 'phrtest',
