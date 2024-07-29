@@ -3,10 +3,9 @@
 namespace Tests\Repository;
 
 use App\Repository\IUserRepository;
-use App\Utils\UserRoleEnum;
+use App\Utils\Enums\UserRoleEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class UserRepositoryTest extends TestCase

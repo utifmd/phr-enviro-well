@@ -1,17 +1,54 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+<div class="py-12">
+    <div class="max-w-full mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="w-full">
+                <div class="sm:flex sm:items-center">
+                    <div class="sm:flex-auto">
+                        <h1 class="text-base font-semibold leading-6 text-gray-900">{{ __('Loading Unloading Report') }}</h1>
+                        <p class="mt-2 text-sm text-gray-700">Load VT in JUNI 2024</p>
+                    </div>
+                    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                        <a type="button" wire:navigate href="{{ __('#') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Export To Excel</a>
+                    </div>
+                </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
+                <div class="flow-root">
+                    <div class="mt-8 overflow-x-auto">
+                        <div class="inline-block min-w-full py-2 align-middle">
+                            <table class="w-full divide-y divide-gray-300">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">No</th>
+                                    <th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Well Number</th>
+                                    @foreach($loads['days'] as $day)
+                                        <th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $day }}</th>
+                                    @endforeach
+                                    <th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">AFE Number</th>
+                                    <th scope="col" class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Total Load</th>
+                                </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 bg-white">
+                                @foreach($loads['data'] as $load)
+                                    <tr class="even:bg-gray-50" wire:key="{{ $load['id'] }}">
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-900">{{ $load['num'].'. ' }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $load['well_number'] }}</td>
+                                        @foreach($load['days'] as $day => $v)
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $v }}</td>
+                                        @endforeach
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $load['wbs_number'] }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $load['total'] }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+
+                            <div class="mt-4 px-4">
+                                {{--{!! $users->withQueryString()->links() !!}--}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>

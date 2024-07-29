@@ -4,13 +4,10 @@ namespace App\Livewire\Forms;
 
 use App\Models\User;
 use App\Repository\IUserRepository;
-use App\Utils\PostTypeEnum;
-use App\Utils\UserRoleEnum;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
+use App\Utils\Enums\UserRoleEnum;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Form;
 use Illuminate\Validation\Rules\Password;
+use Livewire\Form;
 
 class RegisterForm extends Form
 {

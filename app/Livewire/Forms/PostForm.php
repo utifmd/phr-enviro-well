@@ -21,6 +21,8 @@ class PostForm extends Form
     public $title = '';
     public $desc = '';
     public $user_id = '';
+    public $loaded_datetime = [];
+    public $datetime = '';
 
     public function booted(IUserRepository $repository): void
     {
@@ -34,6 +36,8 @@ class PostForm extends Form
 			'title' => 'string',
 			'desc' => 'string',
 			'user_id' => 'uuid',
+			'datetime' => 'string',
+			'loaded_datetime' => 'required',
         ];
     }
 
@@ -50,7 +54,9 @@ class PostForm extends Form
     public function setRequestPostModel(Post $postModel): void
     {
         $this->setPostModel($postModel);
-        $this->user_id = $this->user->id;
+        $this->datetime = $this->postModel->datetime ?? '';
+        $this->loaded_datetime = $this->postModel->loaded_datetime ?? [];
+        $this->user_id = $this->user->id ?? '';
     }
     public function setResponsePostModel(Post $postModel): void
     {
@@ -58,6 +64,12 @@ class PostForm extends Form
         $this->workOrders = $postModel->workOrders;
         $this->uploadedUrls = $postModel->uploadedUrls;
         $this->user = $postModel->user;
+    }
+
+    public function pushLoadedDatetime(): void
+    {
+        $this->loaded_datetime[] = $this->datetime;
+        $this->reset('datetime');
     }
 
     public function store(): void

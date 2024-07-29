@@ -5,10 +5,10 @@ namespace Tests\Models;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\WorkOrder;
-use App\Utils\PostTypeEnum;
-use App\Utils\UserRoleEnum;
-use App\Utils\WorkOrderShiftEnum;
-use App\Utils\WorkOrderStatusEnum;
+use App\Utils\Enums\PostTypeEnum;
+use App\Utils\Enums\UserRoleEnum;
+use App\Utils\Enums\WorkOrderShiftEnum;
+use App\Utils\Enums\WorkOrderStatusEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -47,9 +47,9 @@ class WorkOrderTest extends TestCase
     private function handleNewPost(): string
     {
         $this->post = [
-            'type' => PostTypeEnum::POST_TILE_TYPE->value,
-            'title' => 'Post Title',
-            'desc' => 'Post Desctiption',
+            'type' => PostTypeEnum::POST_WELL_TYPE->value,
+            'title' => 'P_PETA24_29',
+            'desc' => 'PTO2/402/3230920DR',
             'user_id' => $this->userId,
         ];
         $model = Post::query()->create($this->post);
@@ -58,11 +58,10 @@ class WorkOrderTest extends TestCase
     public function testPostRelatedTable()
     {
         $workOrder = [
-            'shift' => WorkOrderShiftEnum::NIGHT->value,
-            'well_number' => 'P_PETA24_30 (Petani 208)',
-            'wbs_number' => 'PTO2/402/3230921DR',
+            'shift' => WorkOrderShiftEnum::DAY->value,
             'is_rig' => false,
             'status' => WorkOrderStatusEnum::STATUS_SENT->value,
+            'well_master_id' => '18d347c6-cfe8-4645-8819-ba62cfc8bc7f',
             'post_id' => $this->postId,
         ];
         WorkOrder::query()->create($workOrder);
@@ -70,10 +69,9 @@ class WorkOrderTest extends TestCase
 
         foreach ($firstPost->workOrders as $wo) {
             self::assertSame($workOrder['shift'], $wo['shift']);
-            self::assertSame($workOrder['well_number'], $wo['well_number']);
-            self::assertSame($workOrder['wbs_number'], $wo['wbs_number']);
             self::assertSame($workOrder['is_rig'], $wo['is_rig']);
             self::assertSame($workOrder['status'], $wo['status']);
+            self::assertSame($workOrder['well_master_id'], $wo['well_master_id']);
             self::assertSame($this->postId, $wo['post_id']);
         }
     }

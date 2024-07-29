@@ -4,10 +4,6 @@ namespace App\Livewire\Users;
 
 use App\Livewire\Forms\RegisterForm;
 use App\Models\User;
-use App\Utils\UserRoleEnum;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 

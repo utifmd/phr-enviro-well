@@ -2,12 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'dashboard')
+Route::get('/', \App\Livewire\Dashboard::class)
     ->middleware(['auth'])
     ->name('dashboard');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
+Route::get('dashboard', \App\Livewire\Dashboard::class)
+    ->middleware(['auth'])
     ->name('dashboard');
 
 Route::view('profile', 'profile')

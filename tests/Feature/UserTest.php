@@ -3,11 +3,10 @@
 namespace Tests\Feature;
 
 use App\Mapper\IUserMapper;
-use App\Utils\UserRoleEnum;
+use App\Utils\Enums\UserRoleEnum;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class UserTest extends TestCase

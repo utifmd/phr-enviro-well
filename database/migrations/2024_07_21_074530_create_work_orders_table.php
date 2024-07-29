@@ -1,7 +1,7 @@
 <?php
 
-use App\Utils\WorkOrderShiftEnum;
-use App\Utils\WorkOrderStatusEnum;
+use App\Utils\Enums\WorkOrderShiftEnum;
+use App\Utils\Enums\WorkOrderStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,10 +24,9 @@ return new class extends Migration
 
             $table->uuid('id')->primary()->unique();
             $table->enum('shift', $shiftAllowed);
-            $table->string('well_number');
-            $table->string('wbs_number');
             $table->boolean('is_rig');
             $table->enum('status', $statusAllowed);
+            $table->uuid('well_master_id');
             $table->timestamps();
 
             $table->foreignUuid('post_id')

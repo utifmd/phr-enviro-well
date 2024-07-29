@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('well_masters', function (Blueprint $table) {
-            $statusAllowed = collect(\App\Utils\WellMasterStatusEnum::cases())
+            $statusAllowed = collect(\App\Utils\Enums\WellMasterStatusEnum::cases())
                 ->map(function ($case) { return $case->value; })
                 ->toArray();
 

@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Post;
-use App\Utils\PostTypeEnum;
+use App\Utils\Enums\PostTypeEnum;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 

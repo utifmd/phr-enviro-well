@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $roles = collect(\App\Utils\UserRoleEnum::cases())
+            $roles = collect(\App\Utils\Enums\UserRoleEnum::cases())
                 ->map(function ($case) { return $case->value; })
                 ->toArray();
 

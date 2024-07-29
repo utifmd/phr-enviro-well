@@ -27,6 +27,26 @@ class WorkOrderRepository implements IWorkOrderRepository
         );
         return $builder->get();
     }
+    public function getWorkOrderLoadBy(int $month, string $wellMasterId): Collection
+    {
+        $columns = 'well_master_id, DATE_PART(\'day\', created_at) AS day, COUNT(created_at) AS count';
+        $builder = WorkOrder::query()
+            ->selectRaw($columns)
+            ->whereRaw('DATE_PART(\'month\', created_at) = \''. $month. '\' AND well_master_id = \''.$wellMasterId.'\'')
+            ->groupByRaw('DATE_PART(\'day\', created_at), well_master_id');
+
+        return $builder->get();
+    }
+    public function getWorkOrderNameByMonth(int $month): Collection
+    {
+        $builder = WorkOrder::query()
+            ->select(['well_masters.id', 'well_masters.ids_wellname', 'well_masters.wbs_number'])
+            ->leftJoin('well_masters', 'well_masters.id', '=', 'work_orders.well_master_id')
+            ->whereRaw('DATE_PART(\'month\', work_orders.created_at) = \'' . $month . '\'')
+            ->groupByRaw('DATE_PART(\'month\', work_orders.created_at), well_masters.id, well_masters.ids_wellname, well_masters.wbs_number');
+
+        return $builder->get();
+    }
 
     function searchWorkOrderByWell(
         string $wellNumber, ?string $wbsNumber, ?string $createdDate, ?string $createdTime): Collection
@@ -50,8 +70,6 @@ class WorkOrderRepository implements IWorkOrderRepository
         try {
             $model = WorkOrder::query()->find($workOrderId);
             $model->shift = $request['shift'];
-            $model->well_number = $request['well_number'];
-            $model->wbs_number = $request['wbs_number'];
             $model->is_rig = $request['is_rig'];
             $model->status = $request['status'];
 
@@ -82,10 +100,9 @@ class WorkOrderRepository implements IWorkOrderRepository
         $workOrder = new WorkOrder();
         $workOrder->id = $model['id'];
         $workOrder->shift = $model['shift'];
-        $workOrder->well_number = $model['well_number'];
-        $workOrder->wbs_number = $model['wbs_number'];
         $workOrder->is_rig = $model['is_rig'];
         $workOrder->status = $model['status'];
+        $workOrder->well_master_id = $model['well_master_id'];
         $workOrder->post_id = $model['post_id'];
         $workOrder->created_at = $model['created_at'];
         $workOrder->updated_at = $model['updated_at'];

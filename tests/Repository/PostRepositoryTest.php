@@ -4,9 +4,8 @@ namespace Tests\Repository;
 
 use App\Models\User;
 use App\Repository\IPostRepository;
-use App\Repository\IUserRepository;
-use App\Utils\PostTypeEnum;
-use App\Utils\UserRoleEnum;
+use App\Utils\Enums\PostTypeEnum;
+use App\Utils\Enums\UserRoleEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;

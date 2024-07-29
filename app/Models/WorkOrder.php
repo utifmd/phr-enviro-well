@@ -12,10 +12,9 @@ use Illuminate\Support\Str;
  *
  * @property $id
  * @property $shift
- * @property $well_number
- * @property $wbs_number
  * @property $is_rig
  * @property $status
+ * @property $well_master_id
  * @property $post_id
  * @property $created_at
  * @property $updated_at
@@ -32,7 +31,7 @@ class WorkOrder extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'shift', 'well_number', 'wbs_number', 'is_rig', 'status', 'post_id',
+        'shift', 'is_rig', 'status', 'well_master_id', 'post_id', 'created_at',
     ];
     protected static function booted(): void
     {

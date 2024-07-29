@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
 
-            $postTypeEnums = \App\Utils\PostTypeEnum::cases();
+            $postTypeEnums = \App\Utils\Enums\PostTypeEnum::cases();
             $allowed = collect($postTypeEnums)
                 ->map(function ($mEnum){ return $mEnum->value; })
                 ->toArray();
