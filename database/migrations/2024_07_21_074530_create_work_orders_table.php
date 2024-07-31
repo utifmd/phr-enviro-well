@@ -26,7 +26,7 @@ return new class extends Migration
             $table->enum('shift', $shiftAllowed);
             $table->boolean('is_rig');
             $table->enum('status', $statusAllowed);
-            $table->uuid('well_master_id');
+            $table->string('ids_wellname');
             $table->timestamps();
 
             $table->foreignUuid('post_id')

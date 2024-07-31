@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Mapper\IPostMapper;
 use App\Models\Post;
+use App\Utils\IUtility;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,10 +13,12 @@ use Throwable;
 class PostRepository implements IPostRepository
 {
     private IPostMapper $mapper;
+    private IUtility $utility;
 
-    public function __construct(IPostMapper $mapper)
+    public function __construct(IPostMapper $mapper, IUtility $utility)
     {
         $this->mapper = $mapper;
+        $this->utility = $utility;
     }
 
     function addPost(array $request): ?Post
@@ -47,7 +50,16 @@ class PostRepository implements IPostRepository
 
     public function pagedPostByUserId(string $userId, ?int $page = null): LengthAwarePaginator
     {
-        return Post::query()->where('user_id', '=', $userId)->paginate();
+        $builder = Post::query()
+            ->where('user_id', '=', $userId)
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+
+        return $builder->through(function ($post){
+            $post->timeAgo = $this->utility->timeAgo($post->created_at);
+            $post->desc = str_replace(';', ' ', $post->desc);
+            return $post;
+        });
     }
 
     function updatePost(string $post_id, array $request): ?Post

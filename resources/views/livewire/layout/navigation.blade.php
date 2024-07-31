@@ -33,6 +33,9 @@ new class extends Component
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('well-masters.index')" :active="request()->routeIs('well-masters.index')" wire:navigate>
+                        {{ __('Well Master') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -54,6 +57,9 @@ new class extends Component
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile')" wire:navigate>
                             {{ __('Profile') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('posts.index')" wire:navigate>
+                            {{ __('My Posts') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->

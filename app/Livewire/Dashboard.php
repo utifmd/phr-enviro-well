@@ -20,7 +20,7 @@ class Dashboard extends Component
     #[Layout('layouts.app')]
     public function render(): View
     {
-        $loads = $this->service->getCountOfLoadPerMonth(7);
+        $loads = $this->service->getCountOfLoadPerMonth(date('Y'), 7);
 
         return view('dashboard', compact('loads'));
     }

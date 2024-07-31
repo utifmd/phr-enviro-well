@@ -3,10 +3,17 @@
 namespace App\Utils;
 
 use App\Utils\IUtility;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class Utility implements IUtility
 {
+    private Carbon $datetime;
+    public function __construct()
+    {
+        $this->datetime = Carbon::now();
+    }
+
     function daysOfMonthLength(?int $month = null): int|false
     {
         $firstDateOfMonth = date_create(date('Y-m-') . '01');
@@ -28,8 +35,30 @@ class Utility implements IUtility
     {
         $result = [];
         for ($i = 1; $i <= $count; $i++) {
-            $result[] = $i;
+            $result[] = sprintf('%02d', $i);
         }
         return $result;
+    }
+    public function timeAgo(string $datetime): string
+    {
+        return $this->datetime->diffForHumans($datetime);
+    }
+    public function combineDashboardArrays(array $loads, array $days): array
+    {
+        $view = [];
+        $colSum = 0;
+        for ($i = 0; $i < count($days); $i++) {
+            $result = 0;
+            foreach ($loads as $load){
+                if ($load['day'] != $days[$i]) continue;
+
+                $result = $load['count'];
+                $colSum += $result;
+            }
+            $view['days'][$i+1] = $result;
+        }
+        $view['total'] = $colSum;
+
+        return $view;
     }
 }

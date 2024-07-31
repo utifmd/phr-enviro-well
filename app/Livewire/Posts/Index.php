@@ -23,7 +23,6 @@ class Index extends Component
     public function render(): View
     {
         $posts = $this->service->pagedWellPost();
-
         return view('livewire.post.index', compact('posts'))
             ->with('i', $this->getPage() * $posts->perPage());
     }

@@ -9,8 +9,8 @@ interface IWorkOrderRepository
 {
     function addWorkOrder(array $request): ?WorkOrder;
     function getWorkOrderById(string $post_id): Collection;
-    function getWorkOrderLoadBy(int $month, string $wellMasterId): Collection;
-    function getWorkOrderNameByMonth(int $month): Collection;
+    function getWorkOrderLoadBy(string $year, int $month, string $idsWellName): Collection;
+    function getWorkOrderNameByMonth(string $year, int $month): Collection;
     function searchWorkOrderByWell(
         string $wellNumber, ?string $wbsNumber, ?string $createdDate, ?string $createdTime): Collection;
 

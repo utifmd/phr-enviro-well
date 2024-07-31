@@ -6,6 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * Class WorkOrder
+ *
+ * @property $id
+ * @property $field_name
+ * @property $ids_wellname
+ * @property $well_number
+ * @property $legal_well
+ * @property $wbs_number
+ *
+ * @package App
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class WellMaster extends Model
 {
     use HasFactory;
@@ -26,4 +39,5 @@ class WellMaster extends Model
             $table->id = Str::uuid();
         });
     }
+    public const WELL_MASTER_NAME = "WELL_MASTER_SESSION";
 }

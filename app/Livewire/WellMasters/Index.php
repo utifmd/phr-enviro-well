@@ -3,10 +3,10 @@
 namespace App\Livewire\WellMasters;
 
 use App\Models\WellMaster;
-use App\Repository\IWellMasterRepository;
 use App\Service\IWellService;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use \Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -16,6 +16,7 @@ class Index extends Component
     use WithPagination;
     private IWellService $service;
 
+    #[Session]
     #[Validate('required|string|min:2')]
     public $querySearch;
 
@@ -43,5 +44,12 @@ class Index extends Component
         $wellMaster->delete();
 
         return $this->redirectRoute('well-masters.index', navigate: true);
+    }
+
+    public function onWellNamePressed(WellMaster $wellMaster)
+    {
+        Session::put(WellMaster::WELL_MASTER_NAME, $wellMaster);
+        Session::save();
+        return $this->redirectRoute('posts.create', navigate: true);
     }
 }

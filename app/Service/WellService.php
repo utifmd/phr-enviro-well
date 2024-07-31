@@ -77,37 +77,16 @@ class WellService implements IWellService
         return $this->postRepository->getPostById($postId);
     }
 
-    private function combineDashboardBy(array $loads, array $days): array
-    {
-        $view = [];
-        $colSum = 0;
-        for ($i = 0; $i < count($days); $i++) {
-            $result = 0;
-            foreach ($loads as $load){
-                if ($load['day'] != $days[$i]) continue;
-
-                $result = $load['count'];
-                $colSum += $result;
-            }
-            $view['days'][$i+1] = $result;
-        }
-        $view['total'] = $colSum;
-
-        return $view;
-    }
-
-    public function getCountOfLoadPerMonth(int $month): ?array
+    public function getCountOfLoadPerMonth(string $year, int $month): ?array
     {
         $days = $this->utility->datesOfTheMonth();
-        $names = $this->workOrderRepository->getWorkOrderNameByMonth($month)->all();
+        $names = $this->workOrderRepository->getWorkOrderNameByMonth($year, $month)->all();
         $view = [];
-        // $date = date('M Y');
         foreach ($names as $i => $name){
 
-            $loads = $this->workOrderRepository->getWorkOrderLoadBy($month, $name['id'])->all();
-            $combinedDashboard = $this->combineDashboardBy($loads, $days);
+            $loads = $this->workOrderRepository->getWorkOrderLoadBy($year, $month, $name['ids_wellname'])->all();
+            $combinedDashboard = $this->utility->combineDashboardArrays($loads, $days);
             $combinedDashboard["num"] = $i +1;
-            $combinedDashboard["id"] = $name['id'];
             $combinedDashboard["well_number"] = $name['ids_wellname'];
             $combinedDashboard["wbs_number"] = $name['wbs_number'];
 

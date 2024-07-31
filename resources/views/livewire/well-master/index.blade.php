@@ -56,9 +56,11 @@
                                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-900">{{ ++$i }}</td>
 
 										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            <a wire:navigate href="{{ route('well-masters.show', $wellMaster->id) }}" class="text-blue-600 font-bold hover:text-blue-900 mr-2">{{ $wellMaster->field_name }}</a>
+                                            <a wire:navigate href="{{ route('well-masters.show', $wellMaster->id) }}" class="text-green-600 font-bold hover:text-green-900 mr-2">{{ $wellMaster->field_name }}</a>
                                         </td>
-										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $wellMaster->ids_wellname }}</td>
+										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            <button wire:navigate wire:click="onWellNamePressed({{ $wellMaster }})" class="text-blue-600 font-bold hover:text-blue-900 mr-2">{{ $wellMaster->ids_wellname }}</button>
+                                        </td>
 										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $wellMaster->well_number }}</td>
 										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $wellMaster->legal_well }}</td>
 										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $wellMaster->job_type }}</td>

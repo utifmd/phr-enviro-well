@@ -27,25 +27,52 @@ class WorkOrderRepository implements IWorkOrderRepository
         );
         return $builder->get();
     }
-    public function getWorkOrderLoadBy(int $month, string $wellMasterId): Collection
+    public function getWorkOrderLoadBy(string $year, int $month, string $idsWellName): Collection
     {
-        $columns = 'well_master_id, DATE_PART(\'day\', created_at) AS day, COUNT(created_at) AS count';
         $builder = WorkOrder::query()
+            ->selectRaw(
+                'ids_wellname,
+                 DATE_PART(\'day\', created_at) AS day,
+                 COUNT(created_at) AS count')
+            ->whereRaw(
+                'DATE_PART(\'year\', created_at) = \''. $year. '\' AND
+                 DATE_PART(\'month\', created_at) = \''. $month. '\' AND
+                 ids_wellname = \''.$idsWellName.'\'')
+            ->groupByRaw(
+                'DATE_PART(\'day\', created_at),
+                 ids_wellname');
+
+        /*$builder = WorkOrder::query()
             ->selectRaw($columns)
             ->whereRaw('DATE_PART(\'month\', created_at) = \''. $month. '\' AND well_master_id = \''.$wellMasterId.'\'')
-            ->groupByRaw('DATE_PART(\'day\', created_at), well_master_id');
+            ->groupByRaw('DATE_PART(\'day\', created_at), well_master_id');*/
 
         return $builder->get();
     }
-    public function getWorkOrderNameByMonth(int $month): Collection
+    public function getWorkOrderNameByMonth(string $year, int $month): Collection
     {
         $builder = WorkOrder::query()
+            ->select([
+                'work_orders.ids_wellname', 'well_masters.wbs_number']) // CONCAT(work_orders.ids_wellname, '(', work_orders.ids_wellname, ')')
+            ->leftJoin('well_masters',
+                'well_masters.ids_wellname', '=', 'work_orders.ids_wellname')
+            ->whereRaw(
+                'DATE_PART(\'year\', work_orders.created_at) = \'' . $year . '\' AND
+                 DATE_PART(\'month\', work_orders.created_at) = \'' . $month . '\'')
+            ->groupByRaw(
+                'DATE_PART(\'month\', work_orders.created_at),
+                 work_orders.ids_wellname,
+                  well_masters.wbs_number');
+
+        /*$builder = WorkOrder::query()
             ->select(['well_masters.id', 'well_masters.ids_wellname', 'well_masters.wbs_number'])
             ->leftJoin('well_masters', 'well_masters.id', '=', 'work_orders.well_master_id')
             ->whereRaw('DATE_PART(\'month\', work_orders.created_at) = \'' . $month . '\'')
-            ->groupByRaw('DATE_PART(\'month\', work_orders.created_at), well_masters.id, well_masters.ids_wellname, well_masters.wbs_number');
+            ->groupByRaw('DATE_PART(\'month\', work_orders.created_at), well_masters.id, well_masters.ids_wellname, well_masters.wbs_number');*/
 
-        return $builder->get();
+        return $builder->get()/*->sortByDesc(function ($wo, $key){
+            return $wo['created_at'];
+        })*/;
     }
 
     function searchWorkOrderByWell(

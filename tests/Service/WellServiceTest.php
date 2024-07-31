@@ -32,14 +32,14 @@ class WellServiceTest extends TestCase
             'email' => 'phrtest@example.com',
             'username' => 'phrtest',
             'password' => Hash::make('password'),
-            'role' => UserRoleEnum::USER_GUEST_ROLE->value,
+            'role' => UserRoleEnum::USER_PT_ROLE->value,
         ];
         $userModel = User::query()->create($this->user);
 
         $this->post = [
             'type' => PostTypeEnum::POST_WELL_TYPE->value,
-            'title' => 'P_PETA24_30 (Petani 208)',
-            'desc' => 'PTO2/402/3230921DR',
+            'title' => 'Pematang P11',
+            'desc' => 'Pematang;Pematang 00108;S1-E1-43B',
             'user_id' => $userModel['id']
         ];
         $this->workOrders = [
@@ -47,48 +47,24 @@ class WellServiceTest extends TestCase
                 'shift' => WorkOrderShiftEnum::NIGHT->value,
                 'is_rig' => false,
                 'status' => WorkOrderStatusEnum::STATUS_SENT->value,
-                'well_master_id' => 'af287815-8a0f-49a2-a0f6-2b550541bddf',
-                'created_at' => new Carbon('2022-07-03 13:51:48'),
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-03 13:51:48'),
                 'post_id' => null
             ],
             [
                 'shift' => WorkOrderShiftEnum::NIGHT->value,
                 'is_rig' => false,
                 'status' => WorkOrderStatusEnum::STATUS_SENT->value,
-                'well_master_id' => 'af287815-8a0f-49a2-a0f6-2b550541bddf',
-                'created_at' => new Carbon('2022-07-03 13:51:48'),
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-03 13:51:48'),
                 'post_id' => null
             ],
             [
                 'shift' => WorkOrderShiftEnum::NIGHT->value,
                 'is_rig' => false,
                 'status' => WorkOrderStatusEnum::STATUS_SENT->value,
-                'well_master_id' => 'af287815-8a0f-49a2-a0f6-2b550541bddf',
-                'created_at' => new Carbon('2022-07-05 13:51:48'),
-                'post_id' => null
-            ],
-            [
-                'shift' => WorkOrderShiftEnum::NIGHT->value,
-                'is_rig' => false,
-                'status' => WorkOrderStatusEnum::STATUS_SENT->value,
-                'well_master_id' => 'af287815-8a0f-49a2-a0f6-2b550541bddf',
-                'created_at' => new Carbon('2022-07-09 13:51:48'),
-                'post_id' => null
-            ],
-            [
-                'shift' => WorkOrderShiftEnum::NIGHT->value,
-                'is_rig' => false,
-                'status' => WorkOrderStatusEnum::STATUS_SENT->value,
-                'well_master_id' => 'aee1632f-3883-4129-bf63-4dcce4a22183',
-                'created_at' => new Carbon('2022-07-15 13:51:48'),
-                'post_id' => null
-            ],
-            [
-                'shift' => WorkOrderShiftEnum::NIGHT->value,
-                'is_rig' => false,
-                'status' => WorkOrderStatusEnum::STATUS_SENT->value,
-                'well_master_id' => 'aee1632f-3883-4129-bf63-4dcce4a22183',
-                'created_at' => new Carbon('2022-07-19 13:51:48'),
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-05 13:51:48'),
                 'post_id' => null
             ],
         ];
@@ -124,7 +100,7 @@ class WellServiceTest extends TestCase
         $this->service->addNewWell(
             $this->post, $this->uploadedUrl, $this->workOrders
         );
-        $countOfLoadPerMonth = $this->service->getCountOfLoadPerMonth(7);
+        $countOfLoadPerMonth = $this->service->getCountOfLoadPerMonth(date('Y'), 7);
         Log::debug(json_encode($countOfLoadPerMonth));
         self::assertTrue(true);
     }

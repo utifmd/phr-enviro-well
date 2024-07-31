@@ -13,6 +13,7 @@ class Show extends Component
 
     public function mount(Post $post)
     {
+        $post->desc = str_replace(';', ' ', $post->desc);
         $this->form->setResponsePostModel($post);
     }
 
