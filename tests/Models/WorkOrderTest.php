@@ -48,8 +48,8 @@ class WorkOrderTest extends TestCase
     {
         $this->post = [
             'type' => PostTypeEnum::POST_WELL_TYPE->value,
-            'title' => 'P_PETA24_29',
-            'desc' => 'PTO2/402/3230920DR',
+            'title' => 'Pematang P11',
+            'desc' => 'Pematang;Pematang 00108;S1-E1-43B',
             'user_id' => $this->userId,
         ];
         $model = Post::query()->create($this->post);
@@ -60,8 +60,8 @@ class WorkOrderTest extends TestCase
         $workOrder = [
             'shift' => WorkOrderShiftEnum::DAY->value,
             'is_rig' => false,
-            'status' => WorkOrderStatusEnum::STATUS_SENT->value,
-            'well_master_id' => '18d347c6-cfe8-4645-8819-ba62cfc8bc7f',
+            'status' => WorkOrderStatusEnum::STATUS_PENDING->value,
+            'ids_wellname' => 'Pematang P11',
             'post_id' => $this->postId,
         ];
         WorkOrder::query()->create($workOrder);
@@ -71,7 +71,7 @@ class WorkOrderTest extends TestCase
             self::assertSame($workOrder['shift'], $wo['shift']);
             self::assertSame($workOrder['is_rig'], $wo['is_rig']);
             self::assertSame($workOrder['status'], $wo['status']);
-            self::assertSame($workOrder['well_master_id'], $wo['well_master_id']);
+            self::assertSame($workOrder['ids_wellname'], $wo['ids_wellname']);
             self::assertSame($this->postId, $wo['post_id']);
         }
     }

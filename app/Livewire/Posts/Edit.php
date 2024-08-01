@@ -13,7 +13,7 @@ class Edit extends Component
 
     public function mount(Post $post)
     {
-        $this->form->setPostModel($post);
+        $this->form->setRequestPostModel($post);
     }
 
     public function save()

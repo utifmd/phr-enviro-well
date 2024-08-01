@@ -81,13 +81,15 @@ class WellService implements IWellService
     {
         $days = $this->utility->datesOfTheMonth();
         $names = $this->workOrderRepository->getWorkOrderNameByMonth($year, $month)->all();
-        $view = [];
+        $view = ['data' => []];
         foreach ($names as $i => $name){
 
-            $loads = $this->workOrderRepository->getWorkOrderLoadBy($year, $month, $name['ids_wellname'])->all();
+            $isRig = $name['is_rig'];
+            $loads = $this->workOrderRepository->getWorkOrderLoadBy($year, $month, $name['ids_wellname'], $isRig)->all();
             $combinedDashboard = $this->utility->combineDashboardArrays($loads, $days);
             $combinedDashboard["num"] = $i +1;
-            $combinedDashboard["well_number"] = $name['ids_wellname'];
+            $wellNumber = $name['ids_wellname'] . ($isRig ? '' : ' (Non Rig)');
+            $combinedDashboard["well_number"] = $wellNumber;
             $combinedDashboard["wbs_number"] = $name['wbs_number'];
 
             $view['data'][] = $combinedDashboard;

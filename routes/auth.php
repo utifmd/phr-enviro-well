@@ -67,8 +67,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/posts/show/{post}', Show::class)
         ->name('posts.show');
 
-    Route::get('/posts/update/{post}', Edit::class)
-        ->name('posts.edit');
+    Route::get('/posts/update/{post}',Edit::class)
+        ->name('posts.edit'); /*function (){ return redirect('/posts'); }*/
 
     Route::get('/well-masters', \App\Livewire\WellMasters\Index::class)
         ->name('well-masters.index');

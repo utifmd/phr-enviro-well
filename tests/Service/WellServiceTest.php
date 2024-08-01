@@ -46,7 +46,7 @@ class WellServiceTest extends TestCase
             [
                 'shift' => WorkOrderShiftEnum::NIGHT->value,
                 'is_rig' => false,
-                'status' => WorkOrderStatusEnum::STATUS_SENT->value,
+                'status' => WorkOrderStatusEnum::STATUS_PENDING->value,
                 'ids_wellname' => 'Pematang P11',
                 'created_at' => new Carbon('2024-07-03 13:51:48'),
                 'post_id' => null
@@ -54,7 +54,7 @@ class WellServiceTest extends TestCase
             [
                 'shift' => WorkOrderShiftEnum::NIGHT->value,
                 'is_rig' => false,
-                'status' => WorkOrderStatusEnum::STATUS_SENT->value,
+                'status' => WorkOrderStatusEnum::STATUS_PENDING->value,
                 'ids_wellname' => 'Pematang P11',
                 'created_at' => new Carbon('2024-07-03 13:51:48'),
                 'post_id' => null
@@ -62,7 +62,7 @@ class WellServiceTest extends TestCase
             [
                 'shift' => WorkOrderShiftEnum::NIGHT->value,
                 'is_rig' => false,
-                'status' => WorkOrderStatusEnum::STATUS_SENT->value,
+                'status' => WorkOrderStatusEnum::STATUS_PENDING->value,
                 'ids_wellname' => 'Pematang P11',
                 'created_at' => new Carbon('2024-07-05 13:51:48'),
                 'post_id' => null

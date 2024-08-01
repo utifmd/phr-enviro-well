@@ -8,7 +8,7 @@ use App\Utils\Enums\WorkOrderShiftEnum;
 use App\Utils\Enums\WorkOrderStatusEnum;
 use Illuminate\Support\Facades\Session;
 use Livewire\Form;
-
+/*TODO: 1. update post by requester*/
 class PostForm extends Form
 {
     public ?Post $postModel;
@@ -83,7 +83,7 @@ class PostForm extends Form
         unset($this->loaded_datetime[$i]);
     }
 
-    public function store(\Closure $addNewWell): void
+    public function store(\Closure $onComplete): void
     {
         $this->validate();
 
@@ -101,14 +101,20 @@ class PostForm extends Form
         $workOrder = [
             'shift' => $this->shift,
             'is_rig' => $this->is_rig,
-            'status' => WorkOrderStatusEnum::STATUS_SENT->value,
+            'status' => WorkOrderStatusEnum::STATUS_PENDING->value,
             'ids_wellname' => $this->ids_wellname
         ];
         foreach ($this->loaded_datetime as $load) {
             $workOrder['created_at'] = $load;
             $workOrders[] = $workOrder;
         }
-        $addNewWell($post, $uploadedUrl, $workOrders);
+        $onComplete($post, $uploadedUrl, $workOrders);
+        $this->reset();
+    }
+
+    public function onUpdateWorkOrder(\Closure $onComplete)
+    {
+        $onComplete();
         $this->reset();
     }
 

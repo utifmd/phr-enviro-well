@@ -4,9 +4,11 @@ namespace App\Repository;
 
 use App\Models\WorkOrder;
 use App\Repository\IWorkOrderRepository;
+use App\Utils\Enums\WorkOrderStatusEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WorkOrderRepository implements IWorkOrderRepository
@@ -27,25 +29,22 @@ class WorkOrderRepository implements IWorkOrderRepository
         );
         return $builder->get();
     }
-    public function getWorkOrderLoadBy(string $year, int $month, string $idsWellName): Collection
+    public function getWorkOrderLoadBy(string $year, int $month, string $idsWellName, bool $isRig = false): Collection
     {
         $builder = WorkOrder::query()
             ->selectRaw(
-                'ids_wellname,
+                'ids_wellname, is_rig,
                  DATE_PART(\'day\', created_at) AS day,
                  COUNT(created_at) AS count')
             ->whereRaw(
-                'DATE_PART(\'year\', created_at) = \''. $year. '\' AND
-                 DATE_PART(\'month\', created_at) = \''. $month. '\' AND
-                 ids_wellname = \''.$idsWellName.'\'')
+                "DATE_PART('year', created_at) = ? AND
+                DATE_PART('month', created_at) = ? AND
+                is_rig = ? AND
+                ids_wellname = ? AND
+                status = ? ", [$year, $month, $isRig, $idsWellName, WorkOrderStatusEnum::STATUS_ACCEPTED->value])
             ->groupByRaw(
                 'DATE_PART(\'day\', created_at),
-                 ids_wellname');
-
-        /*$builder = WorkOrder::query()
-            ->selectRaw($columns)
-            ->whereRaw('DATE_PART(\'month\', created_at) = \''. $month. '\' AND well_master_id = \''.$wellMasterId.'\'')
-            ->groupByRaw('DATE_PART(\'day\', created_at), well_master_id');*/
+                 ids_wellname, is_rig');
 
         return $builder->get();
     }
@@ -53,26 +52,20 @@ class WorkOrderRepository implements IWorkOrderRepository
     {
         $builder = WorkOrder::query()
             ->select([
-                'work_orders.ids_wellname', 'well_masters.wbs_number']) // CONCAT(work_orders.ids_wellname, '(', work_orders.ids_wellname, ')')
+                'work_orders.ids_wellname', 'work_orders.is_rig', 'well_masters.wbs_number'])
             ->leftJoin('well_masters',
                 'well_masters.ids_wellname', '=', 'work_orders.ids_wellname')
             ->whereRaw(
-                'DATE_PART(\'year\', work_orders.created_at) = \'' . $year . '\' AND
-                 DATE_PART(\'month\', work_orders.created_at) = \'' . $month . '\'')
+                "DATE_PART('year', work_orders.created_at) = ? AND
+                DATE_PART('month', work_orders.created_at) = ? AND
+                work_orders.status = ? ", [$year, $month, WorkOrderStatusEnum::STATUS_ACCEPTED->value])
             ->groupByRaw(
                 'DATE_PART(\'month\', work_orders.created_at),
-                 work_orders.ids_wellname,
-                  well_masters.wbs_number');
+                work_orders.ids_wellname,
+                well_masters.wbs_number,
+                work_orders.is_rig');
 
-        /*$builder = WorkOrder::query()
-            ->select(['well_masters.id', 'well_masters.ids_wellname', 'well_masters.wbs_number'])
-            ->leftJoin('well_masters', 'well_masters.id', '=', 'work_orders.well_master_id')
-            ->whereRaw('DATE_PART(\'month\', work_orders.created_at) = \'' . $month . '\'')
-            ->groupByRaw('DATE_PART(\'month\', work_orders.created_at), well_masters.id, well_masters.ids_wellname, well_masters.wbs_number');*/
-
-        return $builder->get()/*->sortByDesc(function ($wo, $key){
-            return $wo['created_at'];
-        })*/;
+        return $builder->get();
     }
 
     function searchWorkOrderByWell(
@@ -96,9 +89,12 @@ class WorkOrderRepository implements IWorkOrderRepository
     {
         try {
             $model = WorkOrder::query()->find($workOrderId);
-            $model->shift = $request['shift'];
-            $model->is_rig = $request['is_rig'];
-            $model->status = $request['status'];
+            if(isset($request['shift']))
+                $model->shift = $request['shift'];
+            if(isset($request['is_rig']))
+                $model->is_rig = $request['is_rig'];
+            if(isset($request['status']))
+                $model->status = $request['status'];
 
             if(!$model->save()) return null;
             return $model
@@ -129,7 +125,7 @@ class WorkOrderRepository implements IWorkOrderRepository
         $workOrder->shift = $model['shift'];
         $workOrder->is_rig = $model['is_rig'];
         $workOrder->status = $model['status'];
-        $workOrder->well_master_id = $model['well_master_id'];
+        $workOrder->ids_wellname = $model['ids_wellname'];
         $workOrder->post_id = $model['post_id'];
         $workOrder->created_at = $model['created_at'];
         $workOrder->updated_at = $model['updated_at'];
