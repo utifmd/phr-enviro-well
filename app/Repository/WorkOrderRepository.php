@@ -29,7 +29,7 @@ class WorkOrderRepository implements IWorkOrderRepository
         );
         return $builder->get();
     }
-    public function getWorkOrderLoadBy(string $year, int $month, string $idsWellName, bool $isRig = false): Collection
+    public function getWorkOrderLoadBy(string $year, string $month, string $idsWellName, bool $isRig = false): Collection
     {
         $builder = WorkOrder::query()
             ->selectRaw(
@@ -48,7 +48,7 @@ class WorkOrderRepository implements IWorkOrderRepository
 
         return $builder->get();
     }
-    public function getWorkOrderNameByMonth(string $year, int $month): Collection
+    public function getWorkOrderNameByMonth(string $year, string $month): Collection
     {
         $builder = WorkOrder::query()
             ->select([

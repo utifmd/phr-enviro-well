@@ -8,5 +8,6 @@ interface IUtility
     function datesOfTheMonthBy(int $daysOfMonthLength): array;
     function datesOfTheMonth(?int $count): array;
     function timeAgo(string $datetime): string;
+    function nameOfMonth(string $numOfMonth): string;
     function combineDashboardArrays(array $loads, array $days): array;
 }

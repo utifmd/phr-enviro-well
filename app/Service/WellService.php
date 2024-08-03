@@ -77,7 +77,7 @@ class WellService implements IWellService
         return $this->postRepository->getPostById($postId);
     }
 
-    public function getCountOfLoadPerMonth(string $year, int $month): ?array
+    public function getCountOfLoadPerMonth(string $year, string $month): ?array
     {
         $days = $this->utility->datesOfTheMonth();
         $names = $this->workOrderRepository->getWorkOrderNameByMonth($year, $month)->all();
@@ -98,10 +98,12 @@ class WellService implements IWellService
         return $view;
     }
 
-    public function pagedWellPost(?int $page = null): LengthAwarePaginator
+    public function pagedWellPost(?bool $isBypassed = null): LengthAwarePaginator
     {
+        if ($isBypassed) return $this->postRepository->pagedPosts();
         $user = $this->userRepository->authenticatedUser();
-        return $this->postRepository->pagedPostByUserId($user->id, $page);
+
+        return $this->postRepository->pagedPostByUserId($user->id);
     }
 
     function pagedWellMaster(?string $query, ?int $page = null): LengthAwarePaginator

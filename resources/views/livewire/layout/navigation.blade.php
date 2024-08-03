@@ -36,6 +36,13 @@ new class extends Component
                     <x-nav-link :href="route('well-masters.index')" :active="request()->routeIs('well-masters.index')" wire:navigate>
                         {{ __('Well Master') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('posts.load-request')" :active="request()->routeIs('posts.load-request')" wire:navigate>
+                        <div class="relative">
+                            {{--<span class="bg-blue-200 text-xs font-medium text-blue-800 text-center p-0.5 leading-none rounded-full px-2 dark:bg-blue-900 dark:text-blue-200 absolute -translate-y-1/2 -translate-x-1/2 right-auto top-0 left-0">top-left</span>--}}
+                            {{--<div class="right-auto top-0 left-0 inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full dark:border-gray-900">8</div>--}}
+                            {{ __('Load Request') }}
+                        </div>
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -59,7 +66,7 @@ new class extends Component
                             {{ __('Profile') }}
                         </x-dropdown-link>
                         <x-dropdown-link :href="route('posts.index')" wire:navigate>
-                            {{ __('My Posts') }}
+                            {{ __('My Requests') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->

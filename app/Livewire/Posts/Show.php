@@ -4,6 +4,7 @@ namespace App\Livewire\Posts;
 
 use App\Livewire\Forms\PostForm;
 use App\Models\Post;
+use App\Repository\IPostRepository;
 use App\Repository\IWorkOrderRepository;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
@@ -12,6 +13,7 @@ use Livewire\Component;
 
 class Show extends Component
 {
+    private IPostRepository $postRepository;
     private IWorkOrderRepository $workOrderRepository;
     public PostForm $form;
 
@@ -26,8 +28,9 @@ class Show extends Component
         $this->currentPostId = $post->id;
     }
 
-    public function booted(IWorkOrderRepository $workOrderRepository): void
+    public function booted(IPostRepository $postRepository, IWorkOrderRepository $workOrderRepository): void
     {
+        $this->postRepository = $postRepository;
         $this->workOrderRepository = $workOrderRepository;
     }
 
@@ -44,6 +47,13 @@ class Show extends Component
             }
         });
         return $this->redirect('/posts/show/'.$this->currentPostId, navigate: true);
+    }
+
+    public function onDeletePressed(string $postId)
+    {
+        $this->postRepository->removePost($postId);
+
+        return $this->redirectRoute('posts.index');
     }
 
     public function delete($id = null)

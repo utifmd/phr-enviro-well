@@ -11,9 +11,9 @@ interface IWellService
         array $postRequest, array $uploadedUrlRequest, array $workOrdersRequest): ?Post;
 
     function getWellPostById(string $postId): ?Post;
-    function getCountOfLoadPerMonth(string $year, int $month): ?array;
+    function getCountOfLoadPerMonth(string $year, string $month): ?array;
 
-    function pagedWellPost(?int $page): LengthAwarePaginator;
+    function pagedWellPost(?bool $isBypassed): LengthAwarePaginator;
 
     /*function searchWellPostByName(string $wellName): ?Post;
     function removeWellPost(string $wellId): bool;*/

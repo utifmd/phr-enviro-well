@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Livewire\Posts\Create;
 use App\Livewire\Posts\Edit;
 use App\Livewire\Posts\Index;
+use App\Livewire\Posts\LoadRequest;
 use App\Livewire\Posts\Show;
 use App\Livewire\Users\Login;
 use App\Livewire\Users\Register;
@@ -60,6 +61,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/posts', Index::class)
         ->name('posts.index');
+
+    Route::get('/load-request', LoadRequest::class)
+        ->name('posts.load-request');
 
     Route::get('/posts/create', Create::class)
         ->name('posts.create');

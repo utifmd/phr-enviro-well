@@ -1,4 +1,4 @@
-<div class="py-12" wire:loading.class="opacity-50">
+<div class="py-12">
     <div class="max-w-full mx-auto sm:px-6 lg:px-8 space-y-6">
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
             <div class="w-full">
@@ -68,11 +68,11 @@
                                         {{ __('Denied All Request') }}
                                     </x-dropdown-link>
                                 </button>
-                                <button id="btn_delete" wire:loading.attr="disabled"
-                                        wire:click.prevent="delete('{{$post->id}}')"
+                                <button wire:loading.attr="disabled"
+                                        wire:click.prevent="onDeletePressed('{{$post->id}}')"
                                         wire:confirm="Are you sure to delete this Well Loads?"
                                         class="w-full text-start">
-                                    <x-dropdown-link class="text-red-600">
+                                    <x-dropdown-link class="text-red-600 font-bold">
                                         {{ __('Delete Permanently') }}
                                     </x-dropdown-link>
                                 </button>
@@ -84,7 +84,7 @@
                 <div class="flow-root">
                     <div class="overflow-x-auto">
                         <div class="inline-block min-w-full py-10 align-middle">
-                            <table class="w-full divide-y divide-gray-300">
+                            <table class="w-full divide-y divide-gray-300" wire:loading.class="opacity-50">
                                 <thead>
                                 <tr>
                                     <th scope="col"
@@ -142,24 +142,22 @@
                                             @endif
                                         </td>
                                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                                            @if($wo['status'] == \App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value)
-                                                <button wire:loading.attr="disabled"
-                                                        wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_REJECTED->value}}')"
-                                                        class="text-red-600 font-bold hover:text-red-900 mr-2">{{ __('Deny') }}</button>
-                                            @else
-                                                <button wire:loading.attr="disabled"
-                                                        wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value}}')"
-                                                        class="text-green-600 font-bold hover:text-green-900 mr-2">{{ __('Allow') }}</button>
-                                            @endif
+                                            <button wire:loading.attr="disabled"
+                                                    wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_REJECTED->value}}')"
+                                                    class="text-red-600 font-bold hover:text-red-900 mr-2">{{ __('Deny') }}</button>
+                                            <button wire:loading.attr="disabled"
+                                                    wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value}}')"
+                                                    class="text-green-600 font-bold hover:text-green-900 mr-2">{{ __('Allow') }}</button>
+                                            {{--@if($wo['status'] == \App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value) @else @endif--}}
                                             {{--<a wire:navigate href="{{ route('work-orders.edit', $wo['id']) }}" class="text-indigo-600 font-bold hover:text-indigo-900  mr-2">{{ __('Edit') }}</a>--}}
-                                            <button
+                                            {{--<button
                                                 class="text-red-600 font-bold hover:text-red-900"
                                                 type="button"
                                                 wire:loading.attr="disabled"
                                                 wire:click.prevent="delete('{{$wo['id']}}')"
                                                 wire:confirm="Are you sure you want to delete?">
                                                 {{ __('Delete') }}
-                                            </button>
+                                            </button>--}}
                                         </td>
                                     </tr>
                                 @endforeach

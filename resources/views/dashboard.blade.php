@@ -7,8 +7,44 @@
                         <h1 class="text-base font-semibold leading-6 text-gray-900">{{ __('Loading Unloading Report') }}</h1>
                         <p class="mt-2 text-sm text-gray-700">Vacuum Truck Report View</p>
                     </div>
-                    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                        <a type="button" wire:navigate href="{{ __('#') }}" class="block rounded-md bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">Export To Excel</a>
+                    <!-- Settings Dropdown -->
+                    <form wire:submit="apply" role="form" method="post" class="min-w-md m-0">
+                        <x-input-label for="selectedYearMonth" :value="__('Historical Report')"/>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-2">
+                                <button type="submit" class="text-white font-medium rounded-lg text-sm p-2">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <x-text-input wire:model="selectedYearMonth" id="selectedYearMonth" name="selectedYearMonth" type="month" min="2018-12" max="{{date('Y')}}-{{date('m')}}" autocomplete="selectedYearMonth" placeholder="Select to filter" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                        </div>
+                        @error('selectedYearMonth')
+                        <x-input-error class="mt-2" :messages="$message"/>
+                        @enderror
+                    </form>
+                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button
+                                    class="inline-flex items-center rounded-md text-gray-500 focus:outline-none hover:text-gray-700 transition ease-in-out duration-150">
+                                    <div class="ms-1">
+                                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                             width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-width="4"
+                                                  d="M6 12h.01m6 0h.01m5.99 0h.01"/>
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link class="text-green-600">
+                                    {{ __('Export To Excel') }}
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
                     </div>
                 </div>
 
@@ -21,7 +57,7 @@
                                     <th scope="col" rowspan="2" class="py-4 pl-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">No</th>
                                     <th scope="col" rowspan="2" class="py-4 px-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Well Number</th>
                                     <th scope="col" colspan="{{count($loads['days'])}}" class="py-4 pl-4 text-center border text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        #Load VT in {{date('M').' '.date('Y')}}
+                                        #Load VT in {{$selectedMonthName.' '.$selectedYear}}
                                     </th>
                                     <th scope="col" rowspan="2" class="py-4 px-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">AFE Number</th>
                                     <th scope="col" rowspan="2" class="px-3 py-y text-center text-xs font-semibold uppercase tracking-wide text-gray-500">Total Load</th>

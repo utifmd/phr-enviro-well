@@ -45,4 +45,5 @@ class WorkOrder extends Model
             Post::class //, 'id', 'post_id'
         );
     }
+    public const WORK_ORDER_NAME = "WORK_ORDER_SESSION";
 }

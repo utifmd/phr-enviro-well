@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Mapper\IPostMapper;
 use App\Models\Post;
+use App\Utils\Enums\WorkOrderStatusEnum;
 use App\Utils\IUtility;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -41,14 +42,14 @@ class PostRepository implements IPostRepository
         return $post->first();
     }
 
-    function pagedPostBySize(?int $page = null, ?int $size = null): LengthAwarePaginator
+    function pagedPosts(): LengthAwarePaginator
     {
-        return Post::query()->paginate(
-            perPage: $size, page: $page
-        );
+        return Post::query()
+            ->orderBy('created_at', 'desc')
+            ->paginate();
     }
 
-    public function pagedPostByUserId(string $userId, ?int $page = null): LengthAwarePaginator
+    public function pagedPostByUserId(string $userId): LengthAwarePaginator
     {
         $builder = Post::query()
             ->where('user_id', '=', $userId)
@@ -57,6 +58,10 @@ class PostRepository implements IPostRepository
 
         return $builder->through(function ($post){
             $post->timeAgo = $this->utility->timeAgo($post->created_at);
+            $post->woPendingReqCount = collect($post->workorders)
+                ->filter(function ($wo){
+                    return $wo['status'] == WorkOrderStatusEnum::STATUS_PENDING->value; })
+                ->count();
             $post->desc = str_replace(';', ' ', $post->desc);
             return $post;
         });

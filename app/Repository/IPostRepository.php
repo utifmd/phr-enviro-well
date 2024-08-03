@@ -9,8 +9,8 @@ interface IPostRepository
 {
     function addPost(array $request): ?Post;
     function getPostById(string $postId): ?Post;
-    function pagedPostBySize(?int $page, ?int $size): LengthAwarePaginator;
-    function pagedPostByUserId(string $userId, ?int $page): LengthAwarePaginator;
+    function pagedPosts(): LengthAwarePaginator;
+    function pagedPostByUserId(string $userId): LengthAwarePaginator;
     function updatePost(string $post_id, array $request): ?Post;
     function removePost(string $post_id): bool;
 

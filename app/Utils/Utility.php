@@ -43,6 +43,19 @@ class Utility implements IUtility
     {
         return $this->datetime->diffForHumans($datetime);
     }
+    public function nameOfMonth(string $numOfMonth): string
+    { // carbon parse number of months to name of month
+        $date = "$numOfMonth/01".date('Y');
+        return date('M', strtotime($date));
+    }
+    /*private function tomorrow()
+    {
+        $date = "01/$numOfMonth/".date('Y');
+        $date1 = str_replace('-', '/', $date);
+        $tomorrow = date('m-d-Y',strtotime($date1 . "+1 days"));
+
+        echo $tomorrow;
+    }*/
     public function combineDashboardArrays(array $loads, array $days): array
     {
         $view = [];

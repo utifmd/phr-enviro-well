@@ -18,11 +18,11 @@
             <x-input-label for="shift" :value="__('Shift')"/>
             <div id="shift" class="flex flex-wrap ms-2 space-x-6">
                 <div class="flex items-center">
-                    <input id="red-radio" type="radio" {{$form->shift == \App\Utils\Enums\WorkOrderShiftEnum::DAY->value ? 'checked' : ''}} value="{{\App\Utils\Enums\WorkOrderShiftEnum::DAY->value}}" name="shift-radio" class="w-4 h-4 text-yellow-400 bg-gray-100 border-gray-300 focus:ring-yellow-500 dark:focus:ring-yellow-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <input wire:model="form.shift" id="shift" name="shift" type="radio" {{$form->shift == \App\Utils\Enums\WorkOrderShiftEnum::DAY->value ? 'checked' : ''}} value="{{\App\Utils\Enums\WorkOrderShiftEnum::DAY->value}}" class="w-4 h-4 text-yellow-400 bg-gray-100 border-gray-300 focus:ring-yellow-500 dark:focus:ring-yellow-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                     <label for="red-radio" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Day</label>
                 </div>
                 <div class="flex items-center">
-                    <input id="green-radio" type="radio" {{$form->shift == \App\Utils\Enums\WorkOrderShiftEnum::NIGHT->value ? 'checked' : ''}} value="{{\App\Utils\Enums\WorkOrderShiftEnum::NIGHT->value}}" name="shift-radio" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <input wire:model="form.shift" id="shift" name="shift" type="radio" {{$form->shift == \App\Utils\Enums\WorkOrderShiftEnum::NIGHT->value ? 'checked' : ''}} value="{{\App\Utils\Enums\WorkOrderShiftEnum::NIGHT->value}}" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                     <label for="green-radio" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Night</label>
                 </div>
             </div>
@@ -34,11 +34,11 @@
             <x-input-label for="is_rig" :value="__('Rig or Non Rig')"/>
             <div id="shift" class="flex flex-wrap ms-2 space-x-6">
                 <div class="flex items-center">
-                    <input id="red-radio" type="radio" {{$form->is_rig ? 'checked' : ''}} value="true" name="rig-radio" class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <input wire:model="form.is_rig" id="is_rig" name="is_rig" type="radio" {{$form->is_rig ? 'checked' : ''}} value=true class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                     <label for="red-radio" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Rig</label>
                 </div>
                 <div class="flex items-center">
-                    <input id="green-radio" type="radio" {{!$form->is_rig ? 'checked' : ''}} value="false" name="rig-radio" class="w-4 h-4 text-orange-500 bg-gray-100 border-gray-300 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <input wire:model="form.is_rig" id="is_rig" name="is_rig" type="radio" {{!$form->is_rig ? 'checked' : ''}} value=false class="w-4 h-4 text-orange-500 bg-gray-100 border-gray-300 focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                     <label for="green-radio" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Non Rig</label>
                 </div>
             </div>
@@ -51,7 +51,7 @@
         <div>
             <x-input-label for="m_datetime" :value="__('Load at')"/>
             <div id="m_datetime" class="flex">
-                <x-text-input wire:model="form.datetime" id="datetime" name="datetime" type="datetime-local" class="mt-1 me-2 block w-full" autocomplete="datetime" placeholder="Loaded datetime"/>
+                <x-text-input wire:model="form.datetime" min="2021-06-07T00:00:00" max="{{date('Y-m-d')}}T{{date('h:m:s')}}" id="datetime" name="datetime" type="datetime-local" class="mt-1 me-2 block w-full" autocomplete="datetime" placeholder="Loaded datetime"/>
 
                 <button type="button"  wire:click="onAddLoadTimePressed" class="whitespace-nowrap px-3 py-2 text-xs font-medium text-center inline-flex items-center rounded-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
