@@ -8,14 +8,22 @@ use App\Models\WellMaster;
 use App\Repository\IUserRepository;
 use App\Service\IWellService;
 use App\Utils\Enums\PostTypeEnum;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Create extends Component
 {
+    use WithFileUploads;
     private ?IWellService $service;
     public PostForm $form;
+
+    #[Validate('required|image|max:2048')]
+    public $imageFile;
 
     public function mount(Post $post): void
     {
@@ -48,6 +56,14 @@ class Create extends Component
     {
         $this->form->store(function (
             $post, $uploadedUrl, $workOrders){
+            // if (is_null($this->imageFile)) return;
+            $path = "images/". $this->form->user_id ."/";
+            $fileName = $path . date('YmdHis') .".". $this->imageFile->getClientOriginalExtension();
+
+            $this->imageFile->storeAs('public', $fileName);
+            $uploadedUrl['path'] = "storage/".$fileName;
+            $uploadedUrl['url'] = URL::asset($uploadedUrl['path']);
+
             $this->service->addNewWell($post, $uploadedUrl, $workOrders);
 
             Session::remove(WellMaster::WELL_MASTER_NAME);

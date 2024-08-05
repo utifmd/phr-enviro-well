@@ -6,6 +6,7 @@ use App\Livewire\Forms\PostForm;
 use App\Models\Post;
 use App\Repository\IPostRepository;
 use App\Repository\IWorkOrderRepository;
+use App\Utils\Enums\WorkOrderStatusEnum;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Session;
@@ -16,15 +17,15 @@ class Show extends Component
     private IPostRepository $postRepository;
     private IWorkOrderRepository $workOrderRepository;
     public PostForm $form;
-
-    #[Session]
-    public $currentPostId;
+    /*#[Session]*/
+    public string $currentPostId;
+    public array $woIds;
 
     public function mount(Post $post)
     {
         $post->desc = str_replace(';', ' ', $post->desc);
-        $post->woIds = collect($post->workorders)->map(function ($wo){ return $wo['id']; });
         $this->form->setResponsePostModel($post);
+        $this->woIds = collect($post->workorders)->map(function ($wo){ return $wo['id']; })->toArray();
         $this->currentPostId = $post->id;
     }
 
@@ -36,8 +37,10 @@ class Show extends Component
 
     public function onChangeStatus(string|array $woIds, string $request)
     {
+        $this->authorize('approval-post', $this->form->postModel);
+
         $request = ['status' => $request];
-        $this->form->onUpdateWorkOrder(function () use ($woIds, $request){
+        $this->form->onUpdateWorkOrders(function () use ($woIds, $request){
             if (is_string($woIds))
                 $this->workOrderRepository->updateWorkOrder($woIds, $request);
             if (!is_array($woIds)) return;
@@ -46,9 +49,23 @@ class Show extends Component
                 $this->workOrderRepository->updateWorkOrder($id, $request);
             }
         });
-        return $this->redirect('/posts/show/'.$this->currentPostId, navigate: true);
+        return $this->redirectRoute('posts.show', ['post' => $this->currentPostId]);
     }
 
+    public function onAllowAllRequestPressed(): void
+    {
+        $this->onChangeStatus(
+            $this->woIds,
+            WorkOrderStatusEnum::STATUS_ACCEPTED->value
+        );
+    }
+    public function onDeniedAllRequestPressed(): void
+    {
+        $this->onChangeStatus(
+            $this->woIds,
+            WorkOrderStatusEnum::STATUS_REJECTED->value
+        );
+    }
     public function onDeletePressed(string $postId)
     {
         $this->postRepository->removePost($postId);
@@ -56,10 +73,6 @@ class Show extends Component
         return $this->redirectRoute('posts.index');
     }
 
-    public function delete($id = null)
-    {
-        Log::debug("delete triggered $id");
-    }
     #[Layout('layouts.app')]
     public function render()
     {

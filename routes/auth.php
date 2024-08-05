@@ -8,6 +8,8 @@ use App\Livewire\Posts\LoadRequest;
 use App\Livewire\Posts\Show;
 use App\Livewire\Users\Login;
 use App\Livewire\Users\Register;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -62,7 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/posts', Index::class)
         ->name('posts.index');
 
-    Route::get('/load-request', LoadRequest::class)
+    Route::get('/load-request/{idsWellName?}', LoadRequest::class)
         ->name('posts.load-request');
 
     Route::get('/posts/create', Create::class)
@@ -72,7 +74,9 @@ Route::middleware('auth')->group(function () {
         ->name('posts.show');
 
     Route::get('/posts/update/{post}',Edit::class)
-        ->name('posts.edit'); /*function (){ return redirect('/posts'); }*/
+        ->name('posts.edit')
+        /*->can('update-post', Post::class)*/
+    ; /*function (){ return redirect('/posts'); }*/
 
     Route::get('/well-masters', \App\Livewire\WellMasters\Index::class)
         ->name('well-masters.index');

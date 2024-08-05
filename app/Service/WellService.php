@@ -89,6 +89,7 @@ class WellService implements IWellService
             $combinedDashboard = $this->utility->combineDashboardArrays($loads, $days);
             $combinedDashboard["num"] = $i +1;
             $wellNumber = $name['ids_wellname'] . ($isRig ? '' : ' (Non Rig)');
+            $combinedDashboard["ids_wellname"] = $name['ids_wellname'];
             $combinedDashboard["well_number"] = $wellNumber;
             $combinedDashboard["wbs_number"] = $name['wbs_number'];
 
@@ -98,9 +99,10 @@ class WellService implements IWellService
         return $view;
     }
 
-    public function pagedWellPost(?bool $isBypassed = null): LengthAwarePaginator
+    public function pagedWellPost(
+        ?bool $isBypassed = null, ?string $idsWellName = null): LengthAwarePaginator
     {
-        if ($isBypassed) return $this->postRepository->pagedPosts();
+        if ($isBypassed) return $this->postRepository->pagedPosts($idsWellName);
         $user = $this->userRepository->authenticatedUser();
 
         return $this->postRepository->pagedPostByUserId($user->id);

@@ -13,7 +13,7 @@ interface IWellService
     function getWellPostById(string $postId): ?Post;
     function getCountOfLoadPerMonth(string $year, string $month): ?array;
 
-    function pagedWellPost(?bool $isBypassed): LengthAwarePaginator;
+    function pagedWellPost(?bool $isBypassed, ?string $idsWellName): LengthAwarePaginator;
 
     /*function searchWellPostByName(string $wellName): ?Post;
     function removeWellPost(string $wellId): bool;*/

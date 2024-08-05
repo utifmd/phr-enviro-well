@@ -12,10 +12,8 @@
                     <div class="sm:flex-auto">
                         <h1 class="text-base font-semibold leading-6 text-gray-900">{{ __('Well Masters') }}</h1>
                         <p class="mt-2 text-sm text-gray-700">A list of all the {{ __('Well Masters') }}.</p>
-                        <div>
-                            <a wire:navigate href="{{ route('well-masters.create') }}" class="text-indigo-600 font-bold hover:text-indigo-900  mr-2">{{ __('Add New') }}</a>
-                        </div>
                     </div>
+                    <!-- Settings Dropdown -->
                     <div>
                         <form wire:submit="search" role="form" method="post">
                             <x-input-label for="querySearch" :value="__('Pencarian Well Master')"/>
@@ -24,6 +22,28 @@
                                 <x-input-error class="mt-2" :messages="$message"/>
                             @enderror
                         </form>
+                    </div>
+                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button
+                                    class="inline-flex items-center rounded-md text-gray-500 focus:outline-none hover:text-gray-700 transition ease-in-out duration-150">
+                                    <div class="ms-1">
+                                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                             width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-width="4"
+                                                  d="M6 12h.01m6 0h.01m5.99 0h.01"/>
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link href="{{ route('posts.create') }}" class="cursor-pointer text-blue-600">
+                                    {{ __('Add New Well Master') }}
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
                     </div>
                 </div>
                 <div class="flow-root">

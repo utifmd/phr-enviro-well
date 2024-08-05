@@ -18,7 +18,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <x-text-input wire:model="selectedYearMonth" id="selectedYearMonth" name="selectedYearMonth" type="month" min="2018-12" max="{{date('Y')}}-{{date('m')}}" autocomplete="selectedYearMonth" placeholder="Select to filter" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            <x-text-input wire:model="selectedYearMonth" id="selectedYearMonth" wire:keydown.enter="apply" name="selectedYearMonth" type="month" min="2018-12" max="{{date('Y')}}-{{date('m')}}" autocomplete="selectedYearMonth" placeholder="Select to filter" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
                         </div>
                         @error('selectedYearMonth')
                         <x-input-error class="mt-2" :messages="$message"/>
@@ -40,7 +40,7 @@
                             </x-slot>
 
                             <x-slot name="content">
-                                <x-dropdown-link class="text-green-600">
+                                <x-dropdown-link class="text-green-600 cursor-pointer">
                                     {{ __('Export To Excel') }}
                                 </x-dropdown-link>
                             </x-slot>
@@ -56,7 +56,7 @@
                                 <tr>
                                     <th scope="col" rowspan="2" class="py-4 pl-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">No</th>
                                     <th scope="col" rowspan="2" class="py-4 px-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Well Number</th>
-                                    <th scope="col" colspan="{{count($loads['days'])}}" class="py-4 pl-4 text-center border text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    <th scope="col" colspan="{{ count($loads['days']) }}" class="py-4 pl-4 text-center border text-xs font-semibold uppercase tracking-wide text-gray-500">
                                         #Load VT in {{$selectedMonthName.' '.$selectedYear}}
                                     </th>
                                     <th scope="col" rowspan="2" class="py-4 px-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">AFE Number</th>
@@ -72,7 +72,11 @@
                                 @foreach($loads['data'] as $load)
                                     <tr class="even:bg-gray-50" wire:key="{{ $load['wbs_number'] }}">
                                         <td class="whitespace-nowrap pl-4 py-4 text-sm font-semibold text-gray-900">{{ $load['num'].'. ' }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $load['well_number'] }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            <a href="{{ route('posts.load-request',  $load['ids_wellname']) }}">
+                                                {{ $load['well_number'] }}
+                                            </a>
+                                        </td>
                                         @foreach($load['days'] as $day => $v)
                                             <td class="whitespace-nowrap py-4 text-center border text-xs text-gray-500">{{ $v }}</td>
                                         @endforeach

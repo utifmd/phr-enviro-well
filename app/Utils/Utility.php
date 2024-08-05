@@ -2,6 +2,8 @@
 
 namespace App\Utils;
 
+use App\Models\Post;
+use App\Utils\Enums\WorkOrderStatusEnum;
 use App\Utils\IUtility;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -73,5 +75,13 @@ class Utility implements IUtility
         $view['total'] = $colSum;
 
         return $view;
+    }
+    public function countWoPendingRequest(Post $post): int
+    {
+        return collect($post->workorders)
+            ->filter(function ($wo){
+                return $wo['status'] == WorkOrderStatusEnum::STATUS_PENDING->value;
+            })
+            ->count();
     }
 }

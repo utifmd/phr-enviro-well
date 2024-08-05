@@ -42,11 +42,23 @@ class PostRepository implements IPostRepository
         return $post->first();
     }
 
-    function pagedPosts(): LengthAwarePaginator
+    function pagedPosts(?string $idsWellName = null): LengthAwarePaginator
     {
-        return Post::query()
+        $builder = Post::query();
+
+        if (!is_null($idsWellName)) {
+            $builder = $builder->where('title', '=', $idsWellName);
+        }
+        $builder = $builder
             ->orderBy('created_at', 'desc')
             ->paginate();
+
+        return $builder->through(function ($post){
+            $post->timeAgo = $this->utility->timeAgo($post->created_at);
+            $post->woPendingReqCount = $this->utility->countWoPendingRequest($post);
+            $post->desc = str_replace(';', ' ', $post->desc);
+            return $post;
+        });
     }
 
     public function pagedPostByUserId(string $userId): LengthAwarePaginator
@@ -58,10 +70,7 @@ class PostRepository implements IPostRepository
 
         return $builder->through(function ($post){
             $post->timeAgo = $this->utility->timeAgo($post->created_at);
-            $post->woPendingReqCount = collect($post->workorders)
-                ->filter(function ($wo){
-                    return $wo['status'] == WorkOrderStatusEnum::STATUS_PENDING->value; })
-                ->count();
+            $post->woPendingReqCount = $this->utility->countWoPendingRequest($post);
             $post->desc = str_replace(';', ' ', $post->desc);
             return $post;
         });

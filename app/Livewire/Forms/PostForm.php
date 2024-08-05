@@ -3,12 +3,10 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Post;
-use App\Models\WellMaster;
 use App\Utils\Enums\WorkOrderShiftEnum;
 use App\Utils\Enums\WorkOrderStatusEnum;
-use Illuminate\Support\Facades\Session;
 use Livewire\Form;
-/*TODO: 1. update post by requester*/
+
 class PostForm extends Form
 {
     public ?Post $postModel;
@@ -57,8 +55,8 @@ class PostForm extends Form
         $this->setPostModel($postModel);
         $this->user_id = $this->postModel->user_id ?? '';
 
-        $this->is_rig = $this->postModel->is_rig ?? true;
         $this->ids_wellname = $this->postModel->ids_wellname ?? '';
+        $this->is_rig = $this->postModel->is_rig ?? true;
         $this->shift = $this->postModel->shift ?? WorkOrderShiftEnum::DAY->value;
 
         $this->datetime = $this->postModel->datetime ?? '';
@@ -67,6 +65,18 @@ class PostForm extends Form
     public function setResponsePostModel(Post $postModel): void
     {
         $this->setPostModel($postModel);
+        $this->user_id = $this->postModel->user_id ?? '';
+
+        $this->ids_wellname = $this->postModel->ids_wellname ?? '';
+
+        $this->postModel->workOrders = collect($this->postModel->workOrders)->sortBy('created_at');
+
+        $this->is_rig = $this->postModel->workOrders[0]['is_rig'] ?? true;
+        $this->shift = $this->postModel->workOrders[0]['shift'] ?? WorkOrderShiftEnum::DAY->value;
+
+        $this->datetime = $this->postModel->datetime ?? '';
+        $this->loaded_datetime = $this->postModel->loaded_datetime ??
+            collect($this->postModel->workOrders)->map(function ($load) { return $load['created_at']; });
     }
 
     public function pushLoadedDatetime(): void
@@ -112,7 +122,7 @@ class PostForm extends Form
         $this->reset();
     }
 
-    public function onUpdateWorkOrder(\Closure $onComplete)
+    public function onUpdateWorkOrders(\Closure $onComplete)
     {
         $onComplete();
         $this->reset();

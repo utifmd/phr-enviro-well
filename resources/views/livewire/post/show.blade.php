@@ -53,7 +53,7 @@
 
                                 <!-- Authentication -->
                                 <button wire:loading.attr="disabled"
-                                        wire:click.prevent="onChangeStatus({{$post->woIds}}, '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value}}')"
+                                        wire:click.prevent="onAllowAllRequestPressed"
                                         wire:confirm="Are you sure to accept this Well Loads Request?"
                                         class="w-full text-start">
                                     <x-dropdown-link class="text-green-600">
@@ -61,13 +61,19 @@
                                     </x-dropdown-link>
                                 </button>
                                 <button wire:loading.attr="disabled"
-                                        wire:click.prevent="onChangeStatus({{$post->woIds}}, '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_REJECTED->value}}')"
+                                        wire:click.prevent="onDeniedAllRequestPressed"
                                         wire:confirm="Are you sure to reject this Well Loads Request?"
                                         class="w-full text-start">
                                     <x-dropdown-link class="text-red-600">
                                         {{ __('Denied All Request') }}
                                     </x-dropdown-link>
                                 </button>
+                                <x-dropdown-link  wire:navigate
+                                                  type="button"
+                                                  href="{{ route('posts.edit', $post->id) }}"
+                                                  wire:loading.attr="disabled" class="text-yellow-300 font-bold">
+                                    {{ __('Update Request') }}
+                                </x-dropdown-link>
                                 <button wire:loading.attr="disabled"
                                         wire:click.prevent="onDeletePressed('{{$post->id}}')"
                                         wire:confirm="Are you sure to delete this Well Loads?"
