@@ -8,7 +8,11 @@
     </div>
     <div>
         <x-input-label for="desc" :value="__('Related Name')"/>
-        <x-text-input wire:model="form.desc" disabled id="desc" name="desc" type="text" class="mt-1 block w-full text-gray-500" autocomplete="desc" placeholder="Related Name"/>
+        <p id="desc">
+            @foreach(explode(';', $form->desc) as $relatedName)
+                <span class="bg-blue-100 text-grey-800 text-xs font-semibold me-1.5 px-2.5 py-0.5 rounded border border-grey-400 inline-flex items-center justify-center">{{$relatedName}}</span>
+            @endforeach
+        </p> {{--<x-text-input wire:model="form.desc" disabled id="desc" name="desc" type="text" class="mt-1 block w-full text-gray-500" autocomplete="desc" placeholder="Related Name"/>--}}
         @error('form.desc')
             <x-input-error class="mt-2" :messages="$message"/>
         @enderror
@@ -66,6 +70,19 @@
         </div>
     </div>
     <div>
+        @foreach($form->loaded_datetime as $i => $loadTime)
+            <span id="badge-dismiss-default" class="inline-flex items-center px-2 py-1 me-2 mb-3 text-sm font-medium text-blue-800 bg-blue-100 rounded dark:bg-blue-900 dark:text-blue-300">
+                {{ str_replace('T', ' ', $loadTime) }}
+                <button type="button" wire:click="onRemoveLoadTimePressed({{$i}})" class="inline-flex items-center p-1 ms-2 text-sm text-blue-400 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-800 dark:hover:text-blue-300" data-dismiss-target="#badge-dismiss-default" aria-label="Remove">
+                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Remove badge</span>
+                </button>
+            </span>
+        @endforeach
+    </div>
+    <div>
         <x-input-label for="evidence" :value="__('Evidence')"/>
         <div id="evidence" class="flex items-center justify-center w-full">
             <label for="imageFile" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -84,6 +101,8 @@
                 </div>
                 @if(isset($imageFile))
                     <img src="{{$imageFile->temporaryUrl()}}" alt="Snapshot image" class="min-w-10 min-h-10">
+                @elseif(count($form->postModel->uploadedUrls) > 0)
+                    <img src="{{$form->postModel->uploadedUrls[0]['url']}}" alt="Snapshot image" class="min-w-10 min-h-10">
                 @else
                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
                         <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
@@ -99,35 +118,22 @@
     </div>
     <div>
         @error('imageFile')
-        <x-input-error class="mt-2" :messages="$message"/>
+            <x-input-error class="mt-2" :messages="$message"/>
         @enderror
         @error('form.datetime')
-        <x-input-error class="mt-2" :messages="$message"/>
+            <x-input-error class="mt-2" :messages="$message"/>
         @enderror
         @error('form.user_id')
-        <x-input-error class="mt-2" :messages="$message"/>
+            <x-input-error class="mt-2" :messages="$message"/>
         @enderror
         @error('form.type')
-        <x-input-error class="mt-2" :messages="$message"/>
+            <x-input-error class="mt-2" :messages="$message"/>
         @enderror
         @error('form.well_master_id')
-        <x-input-error class="mt-2" :messages="$message"/>
+            <x-input-error class="mt-2" :messages="$message"/>
         @enderror
     </div>
-    <div>
-        @foreach($form->loaded_datetime as $i => $loadTime)
-            <span id="badge-dismiss-default" class="inline-flex items-center px-2 py-1 me-2 mb-3 text-sm font-medium text-blue-800 bg-blue-100 rounded dark:bg-blue-900 dark:text-blue-300">
-                {{ str_replace('T', ' ', $loadTime) }}
-                <button type="button" wire:click="onRemoveLoadTimePressed({{$i}})" class="inline-flex items-center p-1 ms-2 text-sm text-blue-400 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-800 dark:hover:text-blue-300" data-dismiss-target="#badge-dismiss-default" aria-label="Remove">
-                    <svg class="w-2 h-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                    <span class="sr-only">Remove badge</span>
-                </button>
-            </span>
-        @endforeach
-    </div>
     <div class="flex items-center gap-4">
-        <x-primary-button>Submit</x-primary-button>
+        <x-primary-button wire:loading.class="disabled opacity-50" >Submit</x-primary-button>
     </div>
 </div>

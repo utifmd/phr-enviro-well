@@ -20,6 +20,8 @@ class PostForm extends Form
     public $ids_wellname = '';
     public $shift = '';
 
+    public $uploadedUrls = [];
+
     public $loaded_datetime = [];
     public $datetime = '';
 
@@ -50,7 +52,7 @@ class PostForm extends Form
         $this->user_id = $this->postModel->user_id;
     }
 
-    public function setRequestPostModel(Post $postModel): void
+    public function setRequestCreatePostModel(Post $postModel): void
     {
         $this->setPostModel($postModel);
         $this->user_id = $this->postModel->user_id ?? '';
@@ -62,6 +64,20 @@ class PostForm extends Form
         $this->datetime = $this->postModel->datetime ?? '';
         $this->loaded_datetime = $this->postModel->loaded_datetime ?? [];
     }
+
+    public function setRequestUpdatePostModel(Post $postModel): void
+    {
+        $this->setPostModel($postModel);
+        $this->user_id = $this->postModel->user_id ?? '';
+
+        $this->ids_wellname = $this->postModel->ids_wellname ?? '';
+        $this->is_rig = $this->postModel->is_rig ?? true;
+        $this->shift = $this->postModel->shift ?? WorkOrderShiftEnum::DAY->value;
+        $this->uploadedUrls = $this->postModel->uploadedUrls ?? [];
+
+        $this->datetime = $this->postModel->datetime ?? '';
+        $this->loaded_datetime = $this->postModel->loaded_datetime ?? [];
+    }
     public function setResponsePostModel(Post $postModel): void
     {
         $this->setPostModel($postModel);
@@ -69,7 +85,8 @@ class PostForm extends Form
 
         $this->ids_wellname = $this->postModel->ids_wellname ?? '';
 
-        $this->postModel->workOrders = collect($this->postModel->workOrders)->sortBy('created_at');
+        $this->postModel->workOrders = collect($this->postModel->workOrders)
+            ->sortBy('created_at');
 
         $this->is_rig = $this->postModel->workOrders[0]['is_rig'] ?? true;
         $this->shift = $this->postModel->workOrders[0]['shift'] ?? WorkOrderShiftEnum::DAY->value;

@@ -22,7 +22,7 @@ class Edit extends Component
 
     public function mount(Post $post)
     {
-        $this->form->setResponsePostModel($post);
+        $this->form->setRequestUpdatePostModel($post);
         $this->currentPostId = $post->id;
         $this->woIds = collect($post->workorders)
             ->map(function ($wo){ return $wo['id']; })

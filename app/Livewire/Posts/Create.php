@@ -32,7 +32,7 @@ class Create extends Component
             $post->desc = $wellMaster->field_name.';'.$wellMaster->ids_wellname.';'.$wellMaster->well_number.';'.$wellMaster->legal_well;
             $post->type = PostTypeEnum::POST_WELL_TYPE->value;
         }
-        $this->form->setRequestPostModel($post);
+        $this->form->setRequestCreatePostModel($post);
     }
     public function booted(IWellService $service, IUserRepository $userRepository): void
     {
