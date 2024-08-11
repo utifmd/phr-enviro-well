@@ -3,22 +3,38 @@
 namespace App\Livewire\Posts;
 
 use App\Livewire\Forms\PostForm;
+use App\Mapper\IUploadedUrlMapper;
 use App\Models\Post;
 use App\Models\WellMaster;
+use App\Policies\PostPolicy;
 use App\Repository\IPostRepository;
 use App\Repository\IWorkOrderRepository;
+use App\Service\IWellService;
 use App\Utils\Enums\WorkOrderStatusEnum;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Edit extends Component
 {
+    use WithFileUploads;
+
+    private ?IWellService $service;
     private IWorkOrderRepository $workOrderRepository;
+    private IUploadedUrlMapper $uploadedUrlMapper;
+
     public PostForm $form;
     public array $woIds;
     public string $currentPostId;
+
+    // #[Validate('required|image|max:2048')]
+    public $imageFile;
 
     public function mount(Post $post)
     {
@@ -29,9 +45,12 @@ class Edit extends Component
             ->toArray();
     }
 
-    public function booted(IWorkOrderRepository $workOrderRepository): void
+    public function booted(
+        IWellService $service, IWorkOrderRepository $workOrderRepository, IUploadedUrlMapper $uploadedUrlMapper): void
     {
+        $this->service = $service;
         $this->workOrderRepository = $workOrderRepository;
+        $this->uploadedUrlMapper = $uploadedUrlMapper;
     }
 
     public function onAddLoadTimePressed(): void
@@ -44,41 +63,35 @@ class Edit extends Component
         $this->form->filteredLoadedDatetimeAt($i);
     }
 
-    public function onChangeRequest()
+    public function onEditSubmit()
     {
-        $this->authorize('update-post', $this->form->postModel);
+        $this->authorize(PostPolicy::IS_USER_OWNED, $this->form->postModel);
+        $this->form->edit(function (
+            $post, $uploadedUrl, $workOrders) {
+            $post['id'] = $this->currentPostId;
+            if ($this->imageFile) {
+                try {
+                    $path = "images/" . $this->form->user_id . "/";
+                    $fileName = $path . date('YmdHis') . "." . $this->imageFile->getClientOriginalExtension();
 
-        $currentWoIds = $this->woIds;
-        $request = [
-            'status' => WorkOrderStatusEnum::STATUS_PENDING->value,
-            'shift' => $this->form->shift,
-            'is_rig' => $this->form->is_rig,
-            'ids_wellname' => $this->form->title,
-            'post_id' => $this->currentPostId,
-        ];
-        $this->form->onUpdateWorkOrders(function () use ($currentWoIds, $request){
-            foreach ($currentWoIds as $id){
-                $this->workOrderRepository->removeWorkOrder($id);
+                    $this->imageFile->storeAs('public', $fileName);
+                    $uploadedUrl['path'] = 'app/public/'.$path;
+                    $uploadedUrl['url'] = URL::asset("storage/" . $fileName);
+
+                    $this->form->onRemoveEvidences(function (array $paths) {
+                        foreach ($paths as $path) { unlink(storage_path($path)); }
+                    });
+                } catch (\Throwable $throwable) {
+                    Log::debug('Edit>store>upload/delete: '.$throwable->getMessage());
+                }
             }
-            foreach ($this->form->loaded_datetime as $time) {
-                $request['created_at'] = $time;
-                $this->workOrderRepository->addWorkOrder($request);
-            }
-        });
-        return $this->redirectRoute('posts.show', ['post' => $this->currentPostId]);
-    }
-
-    public function save()
-    {
-        $this->form->store(function (
-            $post, $uploadedUrl, $workOrders){
-            $this->service->addNewWell($post, $uploadedUrl, $workOrders);
-
+            $this->service->updateWell(
+                $post, $uploadedUrl, $workOrders
+            );
             Session::remove(WellMaster::WELL_MASTER_NAME);
         });
         return $this->redirectRoute('posts.index', navigate: true);
     }
-
     #[Layout('layouts.app')]
     public function render()
     {

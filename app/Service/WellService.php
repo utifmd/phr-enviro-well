@@ -72,6 +72,40 @@ class WellService implements IWellService
         return $post;
     }
 
+    public function updateWell(
+        array $postRequest, array $uploadedUrlRequest, array $workOrdersRequest): ?Post {
+        $post = null;
+        $this->postRepository->beginTransaction();
+        try {
+            $postOrNull = $this->postRepository->updatePost($postRequest['id'], $postRequest);
+
+            if (is_null($postOrNull)) return null;
+            $postId = $postRequest['id']; //$postOrNull->id;
+
+            $uploadedUrlRequest['post_id'] = $postId;
+            $this->uploadedUrlRepository->updateUploadedUrl(
+                $uploadedUrlRequest['id'], $uploadedUrlRequest
+            );
+            if (count($workOrdersRequest) > 0) {
+                $this->workOrderRepository->removeWorkOrderBy($postId); // ?? throw new \Exception('remove work order failed.');
+
+                foreach ($workOrdersRequest as $workOrder) {
+                    $workOrder['post_id'] = $postId;
+                    $this->workOrderRepository->addWorkOrder($workOrder); // ?? throw new \Exception('add work order failed.');
+                }
+            }
+            $post = $this->postRepository
+                ->getPostById($postId);
+
+            $this->postRepository->commitTransaction();
+        } catch (\Throwable $throwable){
+
+            Log::debug('transaction: '. $throwable->getMessage());
+            $this->postRepository->rollback();
+        }
+        return $post;
+    }
+
     function getWellPostById(string $postId): ?Post
     {
         return $this->postRepository->getPostById($postId);

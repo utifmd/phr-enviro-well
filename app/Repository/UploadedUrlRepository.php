@@ -2,17 +2,23 @@
 
 namespace App\Repository;
 
+use App\Mapper\IUploadedUrlMapper;
 use App\Models\UploadedUrl;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class UploadedUrlRepository implements IUploadedUrlRepository
 {
+    private IUploadedUrlMapper $mapper;
+
+    public function __construct(IUploadedUrlMapper $mapper)
+    {
+        $this->mapper = $mapper;
+    }
+
     function addUploadedUrl(array $request): ?UploadedUrl
     {
         $model = UploadedUrl::query()->create($request);
-        $uploadedUrl = $this->fromBuilderOrModel($model);
+        $uploadedUrl = $this->mapper->fromBuilderOrModel($model);
 
         if (is_null($uploadedUrl->id)) return null;
         return $uploadedUrl;
@@ -34,13 +40,32 @@ class UploadedUrlRepository implements IUploadedUrlRepository
         return $builder->delete();
     }
 
-    private function fromBuilderOrModel(Model|Builder $model): UploadedUrl
+    public function updateUploadedUrl(
+        string $uploadedUrlId, array $request): ?UploadedUrl
     {
-        $uploadedUrl = new UploadedUrl();
-        $uploadedUrl->id = $model['id'];
+        $model = UploadedUrl::query()->find($uploadedUrlId);
+        $model->url = $request['url'];
+        $model->path = $request['path'];
+        $model->post_id = $request['post_id'];
 
-        $uploadedUrl->created_at = $model['created_at'];
-        $uploadedUrl->updated_at = $model['updated_at'];
-        return $uploadedUrl;
+        if(!$model->save()) return null;
+        return $model
+            ->get()
+            ->first();
+    }
+
+    function updateUploadedUrlBy(
+        string $postId, array $request): ?UploadedUrl
+    {
+        $builder = UploadedUrl::query()
+            ->where('post_id', '=', $postId);
+
+        $updatedCount = $builder
+            ->update($request);
+
+        $current = $updatedCount < 1 ? $builder->get() : null;
+        if ($current == null) return null;
+
+        return $this->mapper->fromCollection($current);
     }
 }

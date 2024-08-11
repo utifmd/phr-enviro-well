@@ -33,7 +33,7 @@ class Post extends Model
 
     public $incrementing = false;
 
-    protected $perPage = 2;
+    protected $perPage = 6;
 
     protected $fillable = [
         "type", "title", "desc", "user_id"

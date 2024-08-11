@@ -15,8 +15,7 @@ class LoadRequest extends Component
 {
     use WithPagination;
     private IWellService $service;
-    // #[Session]
-    public ?string $idsWellName;
+    public ?string $idsWellName = null;
 
     public function booted(IWellService $service): void
     {
@@ -25,14 +24,8 @@ class LoadRequest extends Component
 
     public function mount(?string $idsWellName = null)
     {
-        Log::debug('posts.load-request: '.$idsWellName);
         $this->idsWellName = $idsWellName;
     }
-
-    /*public function onIdsWellNameSelected(string $idsWellName): void
-    {
-        $posts = $this->service->pagedWellPost(true, $idsWellName);
-    }*/
 
     #[Layout('layouts.app')]
     public function render(): View

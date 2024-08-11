@@ -7,15 +7,15 @@
             <label for="legendStatus">Legend</label>
             <div id="legendStatus" class="flex">
                 <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span
-                        class="flex bg-yellow-300 rounded-full me-1.5 flex-shrink-0"></span>
+                        class="flex w-2.5 h-2.5 bg-yellow-300 rounded-full me-1.5 flex-shrink-0"></span>
                     {{ \App\Utils\Enums\WorkOrderStatusEnum::STATUS_PENDING->value }}
                 </span>
-                        <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span
-                                class="flex w-2.5 h-2.5 bg-red-500 rounded-full me-1.5 flex-shrink-0"></span>
+                <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span
+                        class="flex w-2.5 h-2.5 bg-red-500 rounded-full me-1.5 flex-shrink-0"></span>
                     {{ \App\Utils\Enums\WorkOrderStatusEnum::STATUS_REJECTED->value }}
                 </span>
-                        <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span
-                                class="flex w-2.5 h-2.5 bg-green-500 rounded-full me-1.5 flex-shrink-0"></span>
+                <span class="flex items-center text-sm font-medium text-gray-900 dark:text-white me-3"><span
+                        class="flex w-2.5 h-2.5 bg-green-500 rounded-full me-1.5 flex-shrink-0"></span>
                     {{ \App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value }}
                 </span>
             </div>
@@ -27,10 +27,12 @@
     <div class="flex flex-wrap gap-3 grid-cols-3">
         @foreach($posts as $i => $post)
             <div class="relative p-4 sm:p-8 shadow sm:rounded-lg bg-white">
-                @if($post->woPendingReqCount > 0 && request()->routeIs('posts.load-request'))
-                    <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-yellow-300 border-2 border-white rounded-full -top-2 -start-2 dark:border-gray-900">
-                        {{ $post->woPendingReqCount }}
-                    </div>
+                @if($post->woPendingReqCount > 0)
+                    @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
+                        <div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-yellow-300 border-2 border-white rounded-full -top-2 -start-2 dark:border-gray-900">
+                            {{ $post->woPendingReqCount }}
+                        </div>
+                    @endcan
                 @endif
                 <div class="flex flex-col">
                     <h1 class="font-semibold leading-6 text-gray-900">

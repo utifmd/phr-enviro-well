@@ -10,6 +10,8 @@ use App\Livewire\Users\Login;
 use App\Livewire\Users\Register;
 use App\Models\Post;
 use App\Models\User;
+use App\Policies\PostPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -21,16 +23,6 @@ Route::middleware('guest')->group(function () {
     Route::get('register', Register::class)
         ->name('register');
 
-
-    /*Volt::route('/', 'pages.auth.register')
-        ->name('register');
-
-    Volt::route('register', 'pages.auth.register')
-        ->name('register');
-
-    Volt::route('login', 'pages.auth.login')
-        ->name('login');*/
-
     Volt::route('forgot-password', 'pages.auth.forgot-password')
         ->name('password.request');
 
@@ -39,24 +31,28 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    /*Route::get('/users', \App\Livewire\Users\Index::class)
-        ->name('users.index');
+    Route::get('/users', \App\Livewire\Users\Index::class)
+        ->name('users.index')
+        ->can(UserPolicy::IS_DEV_ROLE);
 
     Route::get('/users/create', \App\Livewire\Users\Create::class)
-        ->name('users.create');
+        ->name('users.create')
+        ->can(UserPolicy::IS_DEV_ROLE);
 
     Route::get('/users/show/{user}', \App\Livewire\Users\Show::class)
-        ->name('users.show');
+        ->name('users.show')
+        ->can(UserPolicy::IS_DEV_ROLE);
 
     Route::get('/users/update/{user}', \App\Livewire\Users\Edit::class)
-        ->name('users.edit');*/
+        ->name('users.edit')
+        ->can(UserPolicy::IS_DEV_ROLE);
 
-    Volt::route('verify-email', 'pages.auth.verify-email')
+    /*Volt::route('verify-email', 'pages.auth.verify-email')
         ->name('verification.notice');
 
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
+        ->name('verification.verify');*/
 
     Volt::route('confirm-password', 'pages.auth.confirm-password')
         ->name('password.confirm');
@@ -65,28 +61,33 @@ Route::middleware('auth')->group(function () {
         ->name('posts.index');
 
     Route::get('/load-request/{idsWellName?}', LoadRequest::class)
-        ->name('posts.load-request');
+        ->name('posts.load-request')
+        ->can(UserPolicy::IS_PHR_ROLE);
 
     Route::get('/posts/create', Create::class)
-        ->name('posts.create');
+        ->name('posts.create')
+        ->can(UserPolicy::IS_PT_ROLE);
 
     Route::get('/posts/show/{post}', Show::class)
-        ->name('posts.show');
+        ->name('posts.show')
+        ->middleware('can:'.PostPolicy::IS_USER_OR_PHR_OWNED.',post');
 
     Route::get('/posts/update/{post}',Edit::class)
         ->name('posts.edit')
-        /*->can('update-post', Post::class)*/
-    ; /*function (){ return redirect('/posts'); }*/
+        ->middleware('can:'.PostPolicy::IS_USER_OR_PHR_OWNED.',post');
 
     Route::get('/well-masters', \App\Livewire\WellMasters\Index::class)
         ->name('well-masters.index');
 
     Route::get('/well-masters/create', \App\Livewire\WellMasters\Create::class)
-        ->name('well-masters.create');
+        ->name('well-masters.create')
+        ->can(UserPolicy::IS_PHR_ROLE);
 
     Route::get('/well-masters/show/{wellMaster}', \App\Livewire\WellMasters\Show::class)
-        ->name('well-masters.show');
+        ->name('well-masters.show')
+        ->can(UserPolicy::IS_PHR_ROLE);
 
     Route::get('/well-masters/update/{wellMaster}', \App\Livewire\WellMasters\Edit::class)
-        ->name('well-masters.edit');
+        ->name('well-masters.edit')
+        ->can(UserPolicy::IS_PHR_ROLE);
 });

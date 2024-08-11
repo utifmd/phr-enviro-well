@@ -44,13 +44,15 @@
 
                             <x-slot name="content">
 
-                                @foreach($post->uploadedUrls as $i => $uploaded)
+                                @foreach($post->uploadedUrls as $uploaded)
                                     <x-dropdown-link target="__blank" :href="$uploaded->url ?? '#'">
                                         <!--wire:navigate>-->
-                                        {{ __('Evidence ').($i+1) }}
+                                        {{ __('Evidence') }}
                                     </x-dropdown-link>
                                 @endforeach
+                                <div class="w-full h-3.5"></div>
 
+                                @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
                                 <!-- Authentication -->
                                 <button wire:loading.attr="disabled"
                                         wire:click.prevent="onAllowAllRequestPressed"
@@ -68,6 +70,9 @@
                                         {{ __('Denied All Request') }}
                                     </x-dropdown-link>
                                 </button>
+                                <div class="w-full h-3.5"></div>
+                                @endcan
+
                                 <x-dropdown-link  wire:navigate
                                                   type="button"
                                                   href="{{ route('posts.edit', $post->id) }}"
@@ -117,10 +122,12 @@
                                         class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                         Request Status
                                     </th>
+                                    @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
                                     <th scope="col"
                                         class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                         Action
                                     </th>
+                                    @endcan
                                 </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
@@ -147,6 +154,7 @@
                                                       type="button">{{ $wo['status'] }}</span>
                                             @endif
                                         </td>
+                                        @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
                                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
                                             <button wire:loading.attr="disabled"
                                                     wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_REJECTED->value}}')"
@@ -154,17 +162,8 @@
                                             <button wire:loading.attr="disabled"
                                                     wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value}}')"
                                                     class="text-green-600 font-bold hover:text-green-900 mr-2">{{ __('Allow') }}</button>
-                                            {{--@if($wo['status'] == \App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value) @else @endif--}}
-                                            {{--<a wire:navigate href="{{ route('work-orders.edit', $wo['id']) }}" class="text-indigo-600 font-bold hover:text-indigo-900  mr-2">{{ __('Edit') }}</a>--}}
-                                            {{--<button
-                                                class="text-red-600 font-bold hover:text-red-900"
-                                                type="button"
-                                                wire:loading.attr="disabled"
-                                                wire:click.prevent="delete('{{$wo['id']}}')"
-                                                wire:confirm="Are you sure you want to delete?">
-                                                {{ __('Delete') }}
-                                            </button>--}}
                                         </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                                 </tbody>

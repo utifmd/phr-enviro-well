@@ -40,7 +40,7 @@
                 {{ __('Already registered?') }}
             </a>
 
-            <x-primary-button class="ms-4">
+            <x-primary-button wire:loading.class="disabled opacity-50" wire:loading.attr="disabled" class="ms-4">
                 {{ __('Register') }}
             </x-primary-button>
         </div>

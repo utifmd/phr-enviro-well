@@ -4,6 +4,7 @@ namespace App\Livewire\Posts;
 
 use App\Livewire\Forms\PostForm;
 use App\Models\Post;
+use App\Policies\UserPolicy;
 use App\Repository\IPostRepository;
 use App\Repository\IWorkOrderRepository;
 use App\Utils\Enums\WorkOrderStatusEnum;
@@ -37,7 +38,7 @@ class Show extends Component
 
     public function onChangeStatus(string|array $woIds, string $request)
     {
-        $this->authorize('approval-post', $this->form->postModel);
+        $this->authorize(UserPolicy::IS_PHR_ROLE, $this->form->postModel);
 
         $request = ['status' => $request];
         $this->form->onUpdateWorkOrders(function () use ($woIds, $request){

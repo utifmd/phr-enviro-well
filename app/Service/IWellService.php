@@ -8,7 +8,14 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface IWellService
 {
     function addNewWell(
-        array $postRequest, array $uploadedUrlRequest, array $workOrdersRequest): ?Post;
+        array $postRequest,
+        array $uploadedUrlRequest,
+        array $workOrdersRequest): ?Post;
+
+    function updateWell(
+        array $postRequest,
+        array $uploadedUrlRequest,
+        array $workOrdersRequest): ?Post;
 
     function getWellPostById(string $postId): ?Post;
     function getCountOfLoadPerMonth(string $year, string $month): ?array;

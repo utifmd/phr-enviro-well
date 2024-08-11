@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Mapper\IPostMapper;
+use App\Mapper\IUploadedUrlMapper;
 use App\Mapper\IUserMapper;
 use App\Mapper\PostMapper;
+use App\Mapper\UploadedUrlMapper;
 use App\Mapper\UserMapper;
 use App\Utils\IUtility;
 use App\Utils\Utility;
@@ -15,7 +17,8 @@ class PhrMapperProvider extends ServiceProvider
     public array $singletons = [
         IUtility::class => Utility::class,
         IUserMapper::class => UserMapper::class,
-        IPostMapper::class => PostMapper::class
+        IPostMapper::class => PostMapper::class,
+        IUploadedUrlMapper::class => UploadedUrlMapper::class,
     ];
     public function provides(): array
     {
@@ -23,6 +26,7 @@ class PhrMapperProvider extends ServiceProvider
             IUtility::class,
             IUserMapper::class,
             IPostMapper::class,
+            IUploadedUrlMapper::class,
         ];
     }
 

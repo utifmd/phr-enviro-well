@@ -39,7 +39,7 @@
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button wire:loading.class="disabled opacity-50" wire:loading.attr="disabled" class="ms-3">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>

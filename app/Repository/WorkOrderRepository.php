@@ -118,6 +118,14 @@ class WorkOrderRepository implements IWorkOrderRepository
         }
     }
 
+    public function removeWorkOrderBy(string $postId): bool
+    {
+        $builder = WorkOrder::query()
+            ->where('post_id', '=', $postId);
+
+        return $builder->delete();
+    }
+
     private function fromBuilderOrModel(Model|Builder $model): WorkOrder
     {
         $workOrder = new WorkOrder();

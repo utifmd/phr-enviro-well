@@ -8,6 +8,8 @@ use Illuminate\Support\Collection;
 interface IUploadedUrlRepository
 {
     function addUploadedUrl(array $request): ?UploadedUrl;
+    function updateUploadedUrl(string $uploadedUrlId, array $request): ?UploadedUrl;
+    function updateUploadedUrlBy(string $postId, array $request): ?UploadedUrl;
     function getUploadedUrlById(string $post_id): Collection;
     function removeUploadedUrl(string $post_id): bool;
 

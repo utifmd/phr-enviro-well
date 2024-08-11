@@ -50,7 +50,8 @@ class PostRepository implements IPostRepository
             $builder = $builder->where('title', '=', $idsWellName);
         }
         $builder = $builder
-            ->orderBy('created_at', 'desc')
+            ->selectRaw('posts.*, (SELECT COUNT(w.id) FROM work_orders AS w WHERE w.post_id=posts.id AND w.status=?) AS pending_wo_length', [WorkOrderStatusEnum::STATUS_PENDING->value])
+            ->orderByRaw('pending_wo_length DESC, posts.created_at DESC')
             ->paginate();
 
         return $builder->through(function ($post){

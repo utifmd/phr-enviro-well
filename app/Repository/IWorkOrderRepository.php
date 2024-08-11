@@ -17,4 +17,5 @@ interface IWorkOrderRepository
     // function searchWorkOrderBySize(int $page, int $size): Collection;
     function updateWorkOrder(string $workOrderId, array $request): ?WorkOrder;
     function removeWorkOrder(string $workOrderId): bool;
+    function removeWorkOrderBy(string $postId): bool;
 }

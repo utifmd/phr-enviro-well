@@ -23,28 +23,30 @@
                             @enderror
                         </form>
                     </div>
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
-                        <x-dropdown align="right" width="48">
-                            <x-slot name="trigger">
-                                <button
-                                    class="inline-flex items-center rounded-md text-gray-500 focus:outline-none hover:text-gray-700 transition ease-in-out duration-150">
-                                    <div class="ms-1">
-                                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                             width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-width="4"
-                                                  d="M6 12h.01m6 0h.01m5.99 0h.01"/>
-                                        </svg>
-                                    </div>
-                                </button>
-                            </x-slot>
+                    @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
+                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+                            <x-dropdown align="right" width="48">
+                                <x-slot name="trigger">
+                                    <button
+                                        class="inline-flex items-center rounded-md text-gray-500 focus:outline-none hover:text-gray-700 transition ease-in-out duration-150">
+                                        <div class="ms-1">
+                                            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                 width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-width="4"
+                                                      d="M6 12h.01m6 0h.01m5.99 0h.01"/>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </x-slot>
 
-                            <x-slot name="content">
-                                <x-dropdown-link href="{{ route('posts.create') }}" class="cursor-pointer text-blue-600">
-                                    {{ __('Add New Well Master') }}
-                                </x-dropdown-link>
-                            </x-slot>
-                        </x-dropdown>
-                    </div>
+                                <x-slot name="content">
+                                    <x-dropdown-link href="{{ route('well-masters.create') }}" class="cursor-pointer text-blue-600">
+                                        {{ __('Add New Well Master') }}
+                                    </x-dropdown-link>
+                                </x-slot>
+                            </x-dropdown>
+                        </div>
+                    @endcan
                 </div>
                 <div class="flow-root">
                     <div class="mt-8 overflow-x-auto">
@@ -67,7 +69,9 @@
 									<th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Actual Drmo</th>
 									<th scope="col" class="py-3 pl-4 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Status</th>
 
+                                    @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"></th>
+                                    @endcan
                                 </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
@@ -76,7 +80,11 @@
                                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-900">{{ ++$i }}</td>
 
 										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            <a wire:navigate href="{{ route('well-masters.show', $wellMaster->id) }}" class="text-green-600 font-bold hover:text-green-900 mr-2">{{ $wellMaster->field_name }}</a>
+                                            @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
+                                                <a wire:navigate href="{{ route('well-masters.show', $wellMaster->id) }}" class="text-green-600 font-bold hover:text-green-900 mr-2">{{ $wellMaster->field_name }}</a>
+                                            @else
+                                                {{ $wellMaster->field_name }}
+                                            @endcan
                                         </td>
 										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                             <button wire:navigate wire:click="onWellNamePressed({{ $wellMaster }})" class="text-blue-600 font-bold hover:text-blue-900 mr-2">{{ $wellMaster->ids_wellname }}</button>
@@ -93,6 +101,7 @@
 										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $wellMaster->actual_drmo }}</td>
 										<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $wellMaster->status }}</td>
 
+                                        @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
                                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
                                             <a wire:navigate href="{{ route('well-masters.edit', $wellMaster->id) }}" class="text-indigo-600 font-bold hover:text-indigo-900  mr-2">{{ __('Edit') }}</a>
                                             <button
@@ -103,6 +112,7 @@
                                                 {{ __('Delete') }}
                                             </button>
                                         </td>
+                                        @endcan
                                     </tr>
                                 @endforeach
                                 </tbody>
