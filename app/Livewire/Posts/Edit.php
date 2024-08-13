@@ -75,7 +75,7 @@ class Edit extends Component
                     $fileName = $path . date('YmdHis') . "." . $this->imageFile->getClientOriginalExtension();
 
                     $this->imageFile->storeAs('public', $fileName);
-                    $uploadedUrl['path'] = 'app/public/'.$path;
+                    $uploadedUrl['path'] = 'app/public/'.$fileName;
                     $uploadedUrl['url'] = URL::asset("storage/" . $fileName);
 
                     $this->form->onRemoveEvidences(function (array $paths) {

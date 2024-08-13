@@ -9,6 +9,8 @@ use App\Policies\UserPolicy;
 use App\Repository\IUserRepository;
 use App\Service\IWellService;
 use App\Utils\Enums\PostTypeEnum;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Livewire\Attributes\Layout;
@@ -59,24 +61,28 @@ class Create extends Component
     {
         $this->authorize(UserPolicy::IS_PT_ROLE, $this->form->postModel);
         $this->validate();
-        $this->form->store(function (
+        Log::debug('getClientOriginalName: '. $this->imageFile->getClientOriginalName());
+        Log::debug('getClientOriginalPath: '. $this->imageFile->getClientOriginalPath());
+        Log::debug('getPathname: '. $this->imageFile->getPathname());
+        Log::debug('getPathInfo: '. $this->imageFile->getPathInfo());
+        Log::debug('getRealPath: '. $this->imageFile->getRealPath());
+        Log::debug('getPath: '. $this->imageFile->getPath());
+        Log::debug('path: '. $this->imageFile->path());
+        /*$this->form->store(function (
             $post, $uploadedUrl, $workOrders){
-
-            /* TODO:
-            [2024-08-12 15:59:26] production.DEBUG: Edit>store>upload/delete: unlink(C:\Users\Utif Milkedori\Documents\Development\backend\phr-enviro\storage\app/public/images/b9619650-3cf1-4300-b3bc-ca51f59f89be/): Is a directory*/
 
             $path = "images/". $this->form->user_id ."/";
             $fileName = $path . date('YmdHis') .".". $this->imageFile->getClientOriginalExtension();
 
             $this->imageFile->storeAs('public', $fileName);
-            $uploadedUrl['path'] = 'app/public/'.$path;
+            $uploadedUrl['path'] = 'app/public/'.$fileName;
             $uploadedUrl['url'] = URL::asset("storage/" . $fileName);
 
             $this->service->addNewWell($post, $uploadedUrl, $workOrders);
 
             Session::remove(WellMaster::WELL_MASTER_NAME);
         });
-        return $this->redirectRoute('posts.index', navigate: true);
+        return $this->redirectRoute('posts.index', navigate: true);*/
     }
 
     #[Layout('layouts.app')]

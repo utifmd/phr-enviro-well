@@ -93,6 +93,7 @@ class PostForm extends Form
 
         $this->is_rig = $this->postModel->workOrders[0]['is_rig'] ?? true;
         $this->shift = $this->postModel->workOrders[0]['shift'] ?? WorkOrderShiftEnum::DAY->value;
+        $this->uploadedUrls = $this->postModel->uploadedUrls->toArray() ?? [];
 
         $this->datetime = $this->postModel->datetime ?? '';
         $this->loaded_datetime = $this->postModel->loaded_datetime ??

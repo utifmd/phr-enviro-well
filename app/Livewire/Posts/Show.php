@@ -69,7 +69,21 @@ class Show extends Component
     }
     public function onDeletePressed(string $postId)
     {
-        $this->postRepository->removePost($postId);
+        try {
+            $this->postRepository->beginTransaction();
+            $this->form->onRemoveEvidences(function (array $paths) {
+                foreach ($paths as $path) {
+                    $isUnlinked = unlink(storage_path($path));
+                    Log::debug('evidence remove: '.$path.' '.json_encode($isUnlinked));
+                }
+            });
+            $this->postRepository->removePost($postId);
+            $this->postRepository->commitTransaction();
+
+        } catch (\Throwable $throwable){
+            Log::debug($throwable->getMessage());
+            $this->postRepository->rollback();
+        }
 
         return $this->redirectRoute('posts.index');
     }
