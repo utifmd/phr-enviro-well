@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public $incrementing = false;
 
-    protected $perPage = 2;
+    protected $perPage = 10;
 
     protected $fillable = [
         'username',

@@ -4,7 +4,10 @@ namespace App\Repository;
 
 use App\Mapper\IUserMapper;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class UserRepository implements IUserRepository
@@ -37,10 +40,36 @@ class UserRepository implements IUserRepository
         if(Auth::check()) Auth::logout();
     }
 
+    public function create(array $request): Model|Builder|null
+    {
+        $builder = User::query();
+        $isUsernameExist = $builder
+            ->where('username', '=', $request['username'])
+            ->get();
+        if ($isUsernameExist->isNotEmpty()) {
+            $request['username'] = ($request['username'].($isUsernameExist->count() +1));
+        }
+        return $builder->create($request);
+    }
+
+    public function update(string $userId, array $request): Model|Builder|null
+    {
+        $builder = User::query()->find($userId);
+        $builder['username'] = $request['username'];
+        $builder['email'] = $request['email'];
+
+        if (isset($request['password'])) {
+            $builder['password'] = Hash::make($request['password']);
+        }
+        $builder['role'] = $request['role'];
+        if (!$builder->save()) return null;
+        return $builder;
+    }
+
     function register(array $request): ?User
     {
         try {
-            $registeredUser = User::query()->create($request);
+            $registeredUser = $this->create($request);
             if (is_null($registeredUser['id'])) return null;
             // event(new Registered(user: $registeredUser));
             return $this->mapper->fromBuilderOrModel($registeredUser);
