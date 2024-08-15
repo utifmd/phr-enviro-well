@@ -100,7 +100,8 @@
                     <span class="sr-only">Loading...</span>
                 </div>
                 @if(isset($imageFile))
-                    <img src="{{$imageFile->temporaryUrl()}}" alt="Snapshot image" class="min-w-10 min-h-10">
+                    <img src="{{ asset($imageFile->getClientOriginalPath()) }}" alt="Temporary image" class="min-w-10 min-h-10">
+                    {{--<img src="{{$imageFile->temporaryUrl()}}" alt="Snapshot image" class="min-w-10 min-h-10">--}}
                 @elseif(count($form->postModel->uploadedUrls) > 0)
                     <img src="{{$form->postModel->uploadedUrls[0]['url']}}" alt="Snapshot image" class="min-w-10 min-h-10">
                 @else

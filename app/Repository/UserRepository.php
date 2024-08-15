@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Mapper\IUserMapper;
 use App\Models\User;
+use App\Utils\Enums\UserRoleEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -64,6 +65,13 @@ class UserRepository implements IUserRepository
         $builder['role'] = $request['role'];
         if (!$builder->save()) return null;
         return $builder;
+    }
+    public function delete(string $userId): bool|null
+    {
+        $builder = User::query()->find($userId);
+        if ($builder->get()->isEmpty()) return null;
+
+        return $builder->delete();
     }
 
     function register(array $request): ?User

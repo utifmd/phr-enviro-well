@@ -34,9 +34,16 @@ new class extends Component
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @can(\App\Policies\UserPolicy::IS_DEV_ROLE)
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                        {{ __('User Master') }}
+                    </x-nav-link>
+                    @endcan
+                    @cannot(\App\Policies\UserPolicy::IS_GUEST_ROLE)
                     <x-nav-link :href="route('well-masters.index')" :active="request()->routeIs('well-masters.index')" wire:navigate>
                         {{ __('Well Master') }}
                     </x-nav-link>
+                    @endcannot
                     @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
                     <x-nav-link :href="route('posts.load-request')" :active="request()->routeIs('posts.load-request')" wire:navigate>
                         <div class="relative">
@@ -70,11 +77,11 @@ new class extends Component
                             {{ __('My Requests') }}
                         </x-dropdown-link>
 
-                        @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
+                        {{--@can(\App\Policies\UserPolicy::IS_PHR_ROLE)
                         <x-dropdown-link :href="route('users.index')" wire:navigate>
                             {{ __('User Management') }}
                         </x-dropdown-link>
-                        @endcan
+                        @endcan--}}
 
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
@@ -115,6 +122,9 @@ new class extends Component
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>
+                    {{--<div class="relative w-56 h-56 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+                        <span class="bg-blue-200 text-xs font-medium text-blue-800 text-center p-0.5 leading-none rounded-full px-2 dark:bg-blue-900 dark:text-blue-200 absolute -translate-y-1/2 -translate-x-1/2 right-auto top-0 left-0">top-left</span>
+                    </div>--}}
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 

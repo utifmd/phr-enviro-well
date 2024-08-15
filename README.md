@@ -7,10 +7,21 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Phr TODOS
+## Phr TODOS Symlink Needs
+#### Universal
+``php artisan storage:link``
+#### Powershell
+```bash
+New-Item -ItemType SymbolicLink -Path "public\livewire-tmp" -Target "storage\app\livewire-tmp"
+```
+#### Debian
+```bash
+ln -s storage\app\livewire-tmp public\livewire-tmp
+```
+
 - php artisan storage:link
 - INFO  The [C:\Users\Utif Milkedori\Documents\Development\backend\phr-enviro\public\storage] link has been connected to [C:\Users\Utif Milkedori\Documents\Development\backend\phr-enviro\storage\app/public].
-- 
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

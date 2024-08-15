@@ -101,6 +101,9 @@
                     <div class="sm:flex-auto">
                         <h1 class="text-base font-semibold leading-6 text-gray-900">{{ __('Hi, ').(auth()->user()->username ?? 'NA') }}</h1>
                         <p class="mt-2 text-sm text-gray-700">Welcome to O&M Environment Facilities Operations Well Management</p>
+                        @can(\App\Policies\UserPolicy::IS_GUEST_ROLE)
+                        <p class="mt-2 text-sm text-red-600 font-bold">Please contact developer to access the apps.</p>
+                        @endcan
                     </div>
                 </div>
             </div>

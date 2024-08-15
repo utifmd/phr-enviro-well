@@ -61,14 +61,7 @@ class Create extends Component
     {
         $this->authorize(UserPolicy::IS_PT_ROLE, $this->form->postModel);
         $this->validate();
-        Log::debug('getClientOriginalName: '. $this->imageFile->getClientOriginalName());
-        Log::debug('getClientOriginalPath: '. $this->imageFile->getClientOriginalPath());
-        Log::debug('getPathname: '. $this->imageFile->getPathname());
-        Log::debug('getPathInfo: '. $this->imageFile->getPathInfo());
-        Log::debug('getRealPath: '. $this->imageFile->getRealPath());
-        Log::debug('getPath: '. $this->imageFile->getPath());
-        Log::debug('path: '. $this->imageFile->path());
-        /*$this->form->store(function (
+        $this->form->store(function (
             $post, $uploadedUrl, $workOrders){
 
             $path = "images/". $this->form->user_id ."/";
@@ -82,7 +75,7 @@ class Create extends Component
 
             Session::remove(WellMaster::WELL_MASTER_NAME);
         });
-        return $this->redirectRoute('posts.index', navigate: true);*/
+        return $this->redirectRoute('posts.index', navigate: true);
     }
 
     #[Layout('layouts.app')]

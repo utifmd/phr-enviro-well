@@ -9,7 +9,7 @@ class WellMasterRepository implements IWellMasterRepository
 {
     function pagingWellMaster(?int $page = null): LengthAwarePaginator
     {
-        return WellMaster::query()->paginate();
+        return WellMaster::query()->orderBy('well_number')->paginate();
     }
     function pagingSearchWellMaster(array $params): LengthAwarePaginator
     {

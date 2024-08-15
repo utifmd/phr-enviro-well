@@ -56,6 +56,13 @@ return [
             'throw' => false,
         ],
 
+        /*'livewire' => [
+            'driver' => 'local', // $url = Storage::disk('external')->url('your-image.jpg');
+            'root' => storage_path('app/livewire-tmp'),
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+        ],*/
+
     ],
 
     /*

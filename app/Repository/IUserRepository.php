@@ -10,6 +10,7 @@ interface IUserRepository
 {
     function create(array $request): Model|Builder|null;
     function update(string $userId, array $request): Model|Builder|null;
+    function delete(string $userId): bool|null;
     function register(array $request): ?User;
     function login(array $request, bool $isRemembering): ?string;
     function authenticate(array $user): bool;

@@ -20,13 +20,14 @@ class UserForm extends Form
     public ?string $updated_at;
     public ?string $password_confirmation;
 
+    public bool $isUpdating = false;
     public bool $isNewPassword = false;
 
     public function rules(): array
     {
         return [
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'. User::class],
-            'password' => ['required', 'string', 'confirmed', Password::defaults()],
+            'password' => ['required', 'string', Password::defaults()],
             'username' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string']
         ];
@@ -46,7 +47,7 @@ class UserForm extends Form
 
         $this->role = $this->userModel->role ?? UserRoleEnum::USER_GUEST_ROLE->value;
         $this->password = $this->userModel->password;
-        $this->password_confirmation = $this->userModel->password_confirmation;
+        // $this->password_confirmation = $this->userModel->password_confirmation;
     }
 
     public function setUserResponseModel(User $userModel): void
@@ -58,30 +59,25 @@ class UserForm extends Form
         $this->updated_at = $userModel->updated_at;
     }
 
-    /*
-     * TODO: both rules need fix
-     * */
-    public function store(): void
+    public function store(\Closure $onComplete): void
     {
-        $this->userModel->create($this->validate());
-
+        $validatedRequest = $this->validate();
+        $onComplete($validatedRequest);
+        //$this->userModel->create($this->validate());
         $this->reset();
     }
 
     public function update(\Closure $onComplete): void
     {
-        $rules = [
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
-            'password' => ['required', 'string', Password::defaults()],
-            'username' => ['required', 'string', 'max:255'],
-            'role' => ['required', 'string']
-        ];
+        $rules = $this->rules();
+        $rules['email'] = ['required', 'string', 'lowercase', 'email', 'max:255'];
+
         if (!$this->isNewPassword) {
             $this->password = null;
             unset($rules['password']);
         }
         // $this->userModel->update($this->validate($rules));
         $onComplete($this->validate($rules));
-        $this->reset();
+        // $this->reset();
     }
 }
