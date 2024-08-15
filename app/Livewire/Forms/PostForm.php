@@ -87,9 +87,7 @@ class PostForm extends Form
         $this->user_id = $this->postModel->user_id ?? '';
 
         $this->ids_wellname = $this->postModel->ids_wellname ?? '';
-
-        $this->postModel->workOrders = collect($this->postModel->workOrders)
-            ->sortBy('created_at');
+        $this->workOrders = $this->postModel->workOrders ?? [];
 
         $this->is_rig = $this->postModel->workOrders[0]['is_rig'] ?? true;
         $this->shift = $this->postModel->workOrders[0]['shift'] ?? WorkOrderShiftEnum::DAY->value;

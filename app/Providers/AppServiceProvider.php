@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Post::class, PostPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
 
-        Gate::define(UserPolicy::IS_GUEST_ROLE, [UserPolicy::class, 'isUserRoleIsGuest']);
+        Gate::define(UserPolicy::IS_NOT_GUEST_ROLE, [UserPolicy::class, 'isUserRoleIsNotGuest']);
         Gate::define(UserPolicy::IS_PT_ROLE, [UserPolicy::class, 'isUserRoleIsPT']);
         Gate::define(UserPolicy::IS_PHR_ROLE, [UserPolicy::class, 'isUserRoleIsPhr']);
         Gate::define(UserPolicy::IS_DEV_ROLE, [UserPolicy::class, 'isUserRoleIsDev']);

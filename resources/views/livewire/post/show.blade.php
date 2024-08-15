@@ -6,7 +6,7 @@
                     <div class="sm:flex-auto">
                         <h1 class="text-base font-semibold leading-6 text-gray-900">{{ $post->title }}</h1>
                         <p class="mt-2 text-sm text-gray-700">{{ $post->desc }}.</p>
-                        <p class="mt-2 text-xs text-gray-800">Requester: {{ $post->user->email }}.</p>
+                        <p class="mt-2 text-xs text-gray-800">Requester: {{ $post->user->email ?? 'deleted account' }}.</p>
                     </div>
 
                     <div wire:loading role="status"> {{-- wire:target="btn_delete"--}}
@@ -131,8 +131,8 @@
                                 </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
-                                @foreach($form->postModel->workOrders as $i => $wo)
-                                    <tr class="even:bg-gray-50" wire:key="{{ $wo->id }}">
+                                @foreach($form->workOrders as $i => $wo)
+                                    <tr class="even:bg-gray-50" wire:key="{{ $wo['id'] }}">
                                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-semibold text-gray-900">{{ ++$i }}
                                             .
                                         </td>

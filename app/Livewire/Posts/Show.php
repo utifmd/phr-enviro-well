@@ -25,8 +25,10 @@ class Show extends Component
     public function mount(Post $post)
     {
         $post->desc = str_replace(';', ' ', $post->desc);
+        $post->workOrders = collect($post->workOrders)->sortBy('created_at')->values()->all();
+
         $this->form->setResponsePostModel($post);
-        $this->woIds = collect($post->workorders)->map(function ($wo){ return $wo['id']; })->toArray();
+        $this->woIds = collect($post->workOrders)->map(function ($wo){ return $wo['id']; })->toArray();
         $this->currentPostId = $post->id;
     }
 

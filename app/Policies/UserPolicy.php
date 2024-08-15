@@ -7,7 +7,7 @@ use App\Utils\Enums\UserRoleEnum;
 
 class UserPolicy
 {
-    const IS_GUEST_ROLE = 'isUserRoleIsGuest';
+    const IS_NOT_GUEST_ROLE = 'isUserRoleIsNotGuest';
 
     const IS_PT_ROLE = 'isUserRoleIsPT';
 
@@ -32,9 +32,9 @@ class UserPolicy
         return $user->role == UserRoleEnum::USER_PT_ROLE->value ||
             $user->role == UserRoleEnum::USER_DEV_ROLE->value;
     }
-    public function isUserRoleIsGuest(User $user): bool
+    public function isUserRoleIsNotGuest(User $user): bool
     {
-        return $user->role == UserRoleEnum::USER_GUEST_ROLE->value;
+        return $user->role != UserRoleEnum::USER_GUEST_ROLE->value;
     }
     public function isUserRoleIsDev(User $user): bool {
         return $user->role == UserRoleEnum::USER_DEV_ROLE->value;

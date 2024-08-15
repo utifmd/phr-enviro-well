@@ -77,7 +77,8 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:'.PostPolicy::IS_USER_OR_PHR_OWNED.',post');
 
     Route::get('/well-masters', \App\Livewire\WellMasters\Index::class)
-        ->name('well-masters.index');
+        ->name('well-masters.index')
+        ->can(UserPolicy::IS_NOT_GUEST_ROLE);
 
     Route::get('/well-masters/create', \App\Livewire\WellMasters\Create::class)
         ->name('well-masters.create')
