@@ -90,7 +90,6 @@ new class extends Component {
                             {{ __('User Management') }}
                         </x-dropdown-link>
                         @endcan--}}
-
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
                             <x-dropdown-link>
@@ -123,6 +122,23 @@ new class extends Component {
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @can(\App\Policies\UserPolicy::IS_DEV_ROLE)
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" wire:navigate>
+                    {{ __('User Master') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can(\App\Policies\UserPolicy::IS_NOT_GUEST_ROLE)
+                <x-responsive-nav-link :href="route('well-masters.index')" :active="request()->routeIs('well-masters.index')" wire:navigate>
+                    {{ __('Well Master') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
+                <x-responsive-nav-link :href="route('posts.load-request')" :active="request()->routeIs('posts.load-request')" wire:navigate>
+                    <div class="relative">
+                        {{ __('Load Request') }}
+                    </div>
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
@@ -140,6 +156,10 @@ new class extends Component {
                         <span class="bg-blue-200 text-xs font-medium text-blue-800 text-center p-0.5 leading-none rounded-full px-2 dark:bg-blue-900 dark:text-blue-200 absolute -translate-y-1/2 -translate-x-1/2 right-auto top-0 left-0">top-left</span>
                     </div>--}}
                     {{ __('Profile') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('posts.index')" wire:navigate>
+                    {{ __('My Requests') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->

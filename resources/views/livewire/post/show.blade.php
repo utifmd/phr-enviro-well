@@ -2,11 +2,12 @@
     <div class="max-w-full mx-auto sm:px-6 lg:px-8 space-y-6">
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
             <div class="w-full">
-                <div class="sm:flex sm:items-center">
+                <div class="sm:flex space-y-2 md:space-y-0">
                     <div class="sm:flex-auto">
                         <h1 class="text-base font-semibold leading-6 text-gray-900">{{ $post->title }}</h1>
                         <p class="mt-2 text-sm text-gray-700">{{ $post->desc }}.</p>
-                        <p class="mt-2 text-xs text-gray-800">Requester: {{ $post->user->email ?? 'deleted account' }}.</p>
+                        <p class="mt-2 text-xs text-gray-800">Requester: {{ $post->user->email ?? 'deleted account' }}
+                            .</p>
                     </div>
 
                     <div wire:loading role="status"> {{-- wire:target="btn_delete"--}}
@@ -24,69 +25,70 @@
                     </div>
 
                     <!-- Settings Dropdown -->
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
-                        <x-dropdown align="right" width="48">
+                    <div class="min-w-md md:mx-2">
+                        <x-input-label for="options" :value="__('Options')"/>
+                        <x-dropdown id="options" align="right" width="48">
                             <x-slot name="trigger">
                                 <button
-                                    class="inline-flex items-center rounded-md text-gray-500 focus:outline-none hover:text-gray-700 transition ease-in-out duration-150">
+                                    class="px-2.5 bg-gray-50 text-gray-900 border border-gray-300 shadow-sm rounded focus:outline-none hover:opacity-50">
                                     <div x-data="Option" x-text="name"
                                          x-on:profile-updated.window="name = $event.detail.name"></div>
 
-                                    <div class="ms-1">
-                                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                             width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-width="4"
-                                                  d="M6 12h.01m6 0h.01m5.99 0h.01"/>
-                                        </svg>
-                                    </div>
+                                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="4"
+                                              d="M6 12h.01m6 0h.01m5.99 0h.01"/>
+                                    </svg>
                                 </button>
                             </x-slot>
 
                             <x-slot name="content">
-
                                 @foreach($post->uploadedUrls as $uploaded)
                                     <x-dropdown-link target="__blank" :href="$uploaded->url ?? '#'">
                                         <!--wire:navigate>-->
                                         {{ __('Evidence') }}
                                     </x-dropdown-link>
                                 @endforeach
-                                <div class="w-full h-3.5"></div>
 
                                 @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
-                                <!-- Authentication -->
-                                <button wire:loading.attr="disabled"
-                                        wire:click.prevent="onAllowAllRequestPressed"
-                                        wire:confirm="Are you sure to accept this Well Loads Request?"
-                                        class="w-full text-start">
-                                    <x-dropdown-link class="text-green-600">
-                                        {{ __('Allowed All Request') }}
-                                    </x-dropdown-link>
-                                </button>
-                                <button wire:loading.attr="disabled"
-                                        wire:click.prevent="onDeniedAllRequestPressed"
-                                        wire:confirm="Are you sure to reject this Well Loads Request?"
-                                        class="w-full text-start">
-                                    <x-dropdown-link class="text-red-600">
-                                        {{ __('Denied All Request') }}
-                                    </x-dropdown-link>
-                                </button>
-                                <div class="w-full h-3.5"></div>
+                                    <div class="w-full h-3.5"></div>
+                                    <!-- Authentication -->
+                                    <button wire:loading.attr="disabled"
+                                            wire:click.prevent="onAllowAllRequestPressed"
+                                            wire:confirm="Are you sure to accept this Well Loads Request?"
+                                            class="w-full text-start">
+                                        <x-dropdown-link class="text-green-600">
+                                            {{ __('Allowed All Request') }}
+                                        </x-dropdown-link>
+                                    </button>
+                                    <button wire:loading.attr="disabled"
+                                            wire:click.prevent="onDeniedAllRequestPressed"
+                                            wire:confirm="Are you sure to reject this Well Loads Request?"
+                                            class="w-full text-start">
+                                        <x-dropdown-link class="text-red-600">
+                                            {{ __('Denied All Request') }}
+                                        </x-dropdown-link>
+                                    </button>
                                 @endcan
-
-                                <x-dropdown-link  wire:navigate
-                                                  type="button"
-                                                  href="{{ route('posts.edit', $post->id) }}"
-                                                  wire:loading.attr="disabled" class="text-yellow-300 font-bold">
-                                    {{ __('Update Request') }}
-                                </x-dropdown-link>
-                                <button wire:loading.attr="disabled"
+                                @canany([\App\Policies\UserPolicy::IS_PHR_ROLE, \App\Policies\PostPolicy::IS_THE_POST_STILL_PENDING], $post)
+                                    <div class="w-full h-3.5"></div>
+                                    <x-dropdown-link
+                                        wire:navigate
+                                        type="button"
+                                        href="{{ route('posts.edit', $post->id) }}"
+                                        wire:loading.attr="disabled" class="text-yellow-300 font-bold">
+                                        {{ __('Update Request') }}
+                                    </x-dropdown-link>
+                                    <button
+                                        wire:loading.attr="disabled"
                                         wire:click.prevent="onDeletePressed('{{$post->id}}')"
                                         wire:confirm="Are you sure to delete this Well Loads?"
                                         class="w-full text-start">
-                                    <x-dropdown-link class="text-red-600 font-bold">
-                                        {{ __('Delete Permanently') }}
-                                    </x-dropdown-link>
-                                </button>
+                                        <x-dropdown-link class="text-red-600 font-bold">
+                                            {{ __('Delete Permanently') }}
+                                        </x-dropdown-link>
+                                    </button>
+                                @endcanany
                             </x-slot>
                         </x-dropdown>
                     </div>
@@ -123,10 +125,9 @@
                                         Request Status
                                     </th>
                                     @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
-                                    <th scope="col"
-                                        class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        Action
-                                    </th>
+                                        <th scope="col"
+                                            class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                        </th>
                                     @endcan
                                 </tr>
                                 </thead>
@@ -155,14 +156,14 @@
                                             @endif
                                         </td>
                                         @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
-                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
-                                            <button wire:loading.attr="disabled"
-                                                    wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_REJECTED->value}}')"
-                                                    class="text-red-600 font-bold hover:text-red-900 mr-2">{{ __('Deny') }}</button>
-                                            <button wire:loading.attr="disabled"
-                                                    wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value}}')"
-                                                    class="text-green-600 font-bold hover:text-green-900 mr-2">{{ __('Allow') }}</button>
-                                        </td>
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 space-x-1">
+                                                <button wire:loading.attr="disabled"
+                                                        wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_REJECTED->value}}')"
+                                                        class="px-3 border border-red-600 rounded text-red-600 hover:opacity-50">{{ __('Deny') }}</button>
+                                                <button wire:loading.attr="disabled"
+                                                        wire:click.prevent="onChangeStatus('{{$wo['id']}}', '{{\App\Utils\Enums\WorkOrderStatusEnum::STATUS_ACCEPTED->value}}')"
+                                                        class="px-3 border border-green-600 rounded text-green-600 hover:opacity-50">{{ __('Allow') }}</button>
+                                            </td>
                                         @endcan
                                     </tr>
                                 @endforeach

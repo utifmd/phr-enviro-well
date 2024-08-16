@@ -1,5 +1,5 @@
 <x-slot name="header">
-    <div class="inline-flex w-full justify-between">
+    <div class="md:inline-flex w-full justify-between space-y-2 md:space-y-0">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ request()->routeIs('posts.load-request') ? 'Load Request' : 'My Request' }}
         </h2>

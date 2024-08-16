@@ -38,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define(PostPolicy::IS_USER_OR_PHR_OWNED, [PostPolicy::class, 'isPhrOrUserOwnThePost']);
         Gate::define(PostPolicy::IS_USER_OWNED, [PostPolicy::class, 'isUserOwnThePost']);
+        Gate::define(PostPolicy::IS_THE_POST_STILL_PENDING, [PostPolicy::class, 'isThePostStillPending']);
 
     }
 }
