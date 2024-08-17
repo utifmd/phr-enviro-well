@@ -13,8 +13,10 @@
                             <x-input-label for="selectedYearMonth" :value="__('Historical Report')"/>
                             <div class="relative">
                                 <x-text-input
+                                    name="selectedYearMonth" type="month"
                                     wire:model="selectedYearMonth" id="selectedYearMonth"
-                                    wire:keydown.enter="apply" name="selectedYearMonth" type="month"
+                                    wire:change="onSelectedYearMonthChange"
+                                    {{--wire:keydown.enter="apply"--}}
                                     min="2018-12" max="{{date('Y')}}-{{date('m')}}"
                                     autocomplete="selectedYearMonth" placeholder="Select to filter"
                                     class="block w-full px-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 hover:opacity-50"

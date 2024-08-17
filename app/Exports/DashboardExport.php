@@ -15,11 +15,11 @@ class DashboardExport implements FromView
     public function __construct(
         IWellService $service, string $selectedYearMonth)
     {
-        $selections = explode('-', $selectedYearMonth);
+        $separatedDates = explode('-', $selectedYearMonth);
 
         $this->service = $service;
-        $this->year = $selections[0];
-        $this->month = $selections[1];
+        $this->year = $separatedDates[0];
+        $this->month = $separatedDates[1];
     }
     /**
      * @inheritDoc
