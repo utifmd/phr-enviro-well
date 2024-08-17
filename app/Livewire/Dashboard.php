@@ -2,13 +2,16 @@
 
 namespace App\Livewire;
 
+use App\Exports\DashboardExport;
 use App\Models\WorkOrder;
 use App\Service\IWellService;
 use App\Utils\IUtility;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Dashboard extends Component
 {
@@ -50,12 +53,19 @@ class Dashboard extends Component
         $this->selectedMonthName = $this->utility->nameOfMonth($this->selectedMonth);
         $this->service->getCountOfLoadPerMonth($this->selectedYear,$this->selectedMonth);
     }
-
     #[Layout('layouts.app')]
     public function render(): View
     {
         $loads = $this->service->getCountOfLoadPerMonth($this->selectedYear,$this->selectedMonth);
 
         return view('dashboard', compact('loads'));
+    }
+    public function exportToExcelPressed(): void
+    {
+        $filename = 'dashboard-' . date('YmdHis') . '.xlsx';
+        $loads = $this->service->getCountOfLoadPerMonth($this->selectedYear,$this->selectedMonth);
+        Log::debug('exportToExcelPressed: '.$filename);
+        $view = view('dashboard', compact('loads'));
+        Excel::download(new DashboardExport($view), $filename);
     }
 }

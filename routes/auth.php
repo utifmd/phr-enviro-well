@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\DashboardExportController;
 use App\Livewire\Posts\Create;
 use App\Livewire\Posts\Edit;
 use App\Livewire\Posts\Index;
@@ -90,5 +91,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/well-masters/update/{wellMaster}', \App\Livewire\WellMasters\Edit::class)
         ->name('well-masters.edit')
+        ->can(UserPolicy::IS_PHR_ROLE);
+
+    Route::get('/export-to-excel/{datetime}', [DashboardExportController::class, 'export'])
+        ->name('dashboard.export')
         ->can(UserPolicy::IS_PHR_ROLE);
 });
