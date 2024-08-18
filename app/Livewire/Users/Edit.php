@@ -8,6 +8,7 @@ use App\Repository\IUserRepository;
 use App\Utils\Enums\UserRoleEnum;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -18,7 +19,7 @@ class Edit extends Component
     public string $currentUserId;
     public string $currentUserRole;
 
-    public function mount(User $user)
+    public function mount(User $user): void
     {
         $this->currentUserId = $user->id;
         $this->currentUserRole = $user->role;
@@ -26,13 +27,17 @@ class Edit extends Component
         $this->form->setUserRequestModel($user);
     }
 
-    public function booted(IUserRepository $userRepository)
+    public function booted(IUserRepository $userRepository): void
     {
         $this->userRepository = $userRepository;
     }
 
     public function save(): void
     {
+        if ($this->form->userModel->role == UserRoleEnum::USER_DEV_ROLE->value) {
+            $this->form->addError('password', 'Developer should not intervention.');
+            return;
+        }
         $this->form->update(function (array $request){
             try {
                 $this->userRepository->update($this->currentUserId, $request);
@@ -54,7 +59,7 @@ class Edit extends Component
     }
 
     #[Layout('layouts.app')]
-    public function render()
+    public function render(): View
     {
         return view('livewire.user.edit');
     }

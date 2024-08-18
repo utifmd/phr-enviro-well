@@ -16,17 +16,15 @@
     </div>
     <div>
         <x-input-label for="role" :value="__('Role')"/>
-        @if($form->role == \App\Utils\Enums\UserRoleEnum::USER_DEV_ROLE->value)
-            <x-text-input wire:model="form.role" id="role" name="role" type="text" class="mt-1 block w-full opacity-50" autocomplete="role" placeholder="Role" disabled/>
-        @else
-            <select name="role" id="role" wire:model="form.role" name="role" class="mt-1 block w-full">
-                <option value="">--- Choose a role ---</option>
-                @foreach(\App\Utils\Enums\UserRoleEnum::cases() as $case)
-                    @if($case->value == \App\Utils\Enums\UserRoleEnum::USER_DEV_ROLE->value) @continue @endif
-                    <option value="{{$case->value}}" selected="{{$case == $form->role}}">{{$case->name}}</option>
-                @endforeach
-            </select>
-        @endif
+        <select name="role" id="role" wire:model="form.role" name="role" class="mt-1 block w-full">
+            <option value="">--- Choose a role ---</option>
+            @foreach(\App\Utils\Enums\UserRoleEnum::cases() as $case)
+                @if($case->value == \App\Utils\Enums\UserRoleEnum::USER_DEV_ROLE->value)
+                    @continue
+                @endif
+                <option value="{{$case->value}}" selected="{{$case == $form->role}}">{{$case->name}}</option>
+            @endforeach
+        </select>
         @error('form.role')
         <x-input-error class="mt-2" :messages="$message"/>
         @enderror

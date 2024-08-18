@@ -14,13 +14,18 @@
                         <p class="mt-2 text-sm text-gray-700">A list of all the {{ __('Well Masters') }}.</p>
                     </div>
                     <!-- Settings Dropdown -->
-                    <form wire:submit="search" role="form" method="post">
+                    <div class="min-w-md">
                         <x-input-label for="querySearch" :value="__('Pencarian Well Master')"/>
-                        <x-text-input wire:model="querySearch" id="querySearch" name="querySearch" type="text" class="block w-full px-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 hover:opacity-50" autocomplete="querySearch" placeholder="Enter to search"/>
+                        <x-text-input
+                            id="querySearch" name="querySearch" class="block w-full px-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 hover:opacity-50" autocomplete="querySearch" placeholder="Enter to search"
+                            wire:model="querySearch"
+                            wire:keydown.enter="search"
+                            type="text"/>
+
                         @error('querySearch')
                         <x-input-error class="mt-2" :messages="$message"/>
                         @enderror
-                    </form>
+                    </div>
                     @can(\App\Policies\UserPolicy::IS_PHR_ROLE)
                         <div class="min-w-md md:mx-2">
                             <x-input-label for="options" :value="__('Options')"/>

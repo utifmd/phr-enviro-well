@@ -8,13 +8,50 @@
     <div class="max-w-full mx-auto sm:px-6 lg:px-8 space-y-6">
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
             <div class="w-full">
-                <div class="sm:flex sm:items-center">
+                <div class="sm:flex space-y-2 md:space-y-0">
                     <div class="sm:flex-auto">
-                        <h1 class="text-base font-semibold leading-6 text-gray-900">{{ __('Users') }}</h1>
-                        <p class="mt-2 text-sm text-gray-700">A list of all the {{ __('Users') }}.</p>
+                        <h1 class="text-base font-semibold leading-6 text-gray-900">{{ __('Loading Unloading Report') }}</h1>
+                        <p class="mt-2 text-sm text-gray-700">Vacuum Truck Report View</p>
                     </div>
-                    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                        <a type="button" wire:navigate href="{{ route('users.create') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add new</a>
+                    <!-- Settings Dropdown -->
+                    <div class="min-w-md">
+                        <x-input-label for="roles" :value="__('Roles')"/>
+                        <div class="relative">
+                            <select
+                                wire:model="role"
+                                wire:change="onRoleChange"
+                                class="block w-full px-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 hover:opacity-50"
+                                name="roles" id="roles" required>
+                                <option value="">-- Please choose --</option>
+                                @foreach(\App\Utils\Enums\UserRoleEnum::cases() as $case)
+                                    <option value="{{ $case->value }}">{{ $case->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('role')
+                        <x-input-error class="mt-2" :messages="$message"/>
+                        @enderror
+                    </div>
+                    <div class="min-w-md md:mx-2">
+                        <x-input-label for="options" :value="__('Options')"/>
+                        <x-dropdown id="options" align="right" width="48">
+                            <x-slot name="trigger">
+                                <button
+                                    class="px-2.5 bg-gray-50 text-gray-900 border border-gray-300 shadow-sm rounded focus:outline-none hover:opacity-50">
+                                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="4"
+                                              d="M6 12h.01m6 0h.01m5.99 0h.01"/>
+                                    </svg>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('users.create')" class="text-green-600 cursor-pointer">
+                                    {{ __('Add New User') }}
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
                     </div>
                 </div>
 
@@ -47,8 +84,7 @@
                                                 class="text-red-600 font-bold hover:text-red-900"
                                                 type="button"
                                                 wire:click="delete('{{ $user->id }}')"
-                                                wire:confirm="Are you sure you want to delete?"
-                                            >
+                                                wire:confirm="Are you sure you want to delete?">
                                                 {{ __('Delete') }}
                                             </button>
                                         </td>

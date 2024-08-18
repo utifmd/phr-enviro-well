@@ -9,7 +9,7 @@
                             <p class="mt-2 text-sm text-gray-700">Vacuum Truck Report View</p>
                         </div>
                         <!-- Settings Dropdown -->
-                        <form wire:submit="apply" role="form" method="post" class="min-w-md">
+                        <div class="min-w-md">
                             <x-input-label for="selectedYearMonth" :value="__('Historical Report')"/>
                             <div class="relative">
                                 <x-text-input
@@ -25,7 +25,7 @@
                             @error('selectedYearMonth')
                             <x-input-error class="mt-2" :messages="$message"/>
                             @enderror
-                        </form>
+                        </div>
                         <div class="min-w-md md:mx-2">
                             <x-input-label for="options" :value="__('Options')"/>
                             <x-dropdown id="options" align="right" width="48">

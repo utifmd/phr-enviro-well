@@ -5,8 +5,10 @@ namespace App\Repository;
 use App\Mapper\IUserMapper;
 use App\Models\User;
 use App\Utils\Enums\UserRoleEnum;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -14,9 +16,12 @@ use Illuminate\Support\Facades\Log;
 class UserRepository implements IUserRepository
 {
     private IUserMapper $mapper;
+    private ?Builder $builder;
+
     public function __construct(IUserMapper $mapper)
     {
         $this->mapper = $mapper;
+        $this->builder = User::query();
     }
 
     function login(array $request, bool $isRemembering = false): ?string
@@ -55,7 +60,7 @@ class UserRepository implements IUserRepository
 
     public function update(string $userId, array $request): Model|Builder|null
     {
-        $builder = User::query()->find($userId);
+        $builder = $this->builder->find($userId);
         $builder['username'] = $request['username'];
         $builder['email'] = $request['email'];
 
@@ -68,7 +73,7 @@ class UserRepository implements IUserRepository
     }
     public function delete(string $userId): bool|null
     {
-        $builder = User::query()->find($userId);
+        $builder = $this->builder->find($userId);
         if ($builder->get()->isEmpty()) return null;
 
         return $builder->delete();
@@ -91,10 +96,12 @@ class UserRepository implements IUserRepository
     function getUserById(string $id): ?User
     {
         try {
-            $user = User::query()
+            $user = $this->builder
                 ->find($id)
                 ->get();
+
         } catch (\Throwable $t){
+            Log::debug($t->getMessage());
             return null;
         }
         return $user
@@ -103,10 +110,37 @@ class UserRepository implements IUserRepository
 
     function getUserByEmail(string $email): ?User
     {
-        return User::query()
+        return $this->builder
             ->where("email", "=", $email)
             ->get()
             ->first();
+    }
+
+    public function pagedUsersByRole(string $role): LengthAwarePaginator
+    {
+        return $this->builder
+            ->where("role", "=", $role)
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at')
+            ->paginate();
+    }
+
+    public function pagedUsers(): LengthAwarePaginator
+    {
+        return $this->builder
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at')
+            ->paginate();
+    }
+
+    public function searchUsersBy(string $nameOrEmail): Collection
+    {
+        return $this->builder
+            ->where("username", "LIKE", "'%$nameOrEmail%'")
+            ->orWhere("email", "LIKE", "'%$nameOrEmail%'")
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at')
+            ->get();
     }
 
     function isAuthenticated(): bool

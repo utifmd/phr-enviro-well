@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Users;
 
+use App\Livewire\Forms\UserForm;
 use App\Models\User;
 use App\Policies\UserPolicy;
 use App\Repository\IUserRepository;
+use App\Utils\Enums\UserRoleEnum;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
@@ -15,18 +17,26 @@ class Index extends Component
 {
     use WithPagination;
     private IUserRepository $userRepository;
+    public string $role;
 
     public function booted(IUserRepository $userRepository): void
     {
         $this->userRepository = $userRepository;
     }
-    #[Layout('layouts.app')]
-    public function render(): View
-    {
-        $users = User::paginate();
 
-        return view('livewire.user.index', compact('users'))
-            ->with('i', $this->getPage() * $users->perPage());
+    public function mount(User $user): void
+    {
+        $this->role = $user->role ?? '';
+    }
+
+    public function onRoleChange(): void
+    {
+        if ($this->role == "") {
+            $this->userRepository->pagedUsers();
+            return;
+        }
+        $this->validate(['role' => 'required|string|min:3']);
+        $this->userRepository->pagedUsersByRole($this->role);
     }
 
     public function delete(string $userId): void
@@ -39,5 +49,14 @@ class Index extends Component
             return;
         }
         $this->redirectRoute('users.index', navigate: true);
+    }
+
+    #[Layout('layouts.app')]
+    public function render(): View
+    {
+        $users = $this->userRepository->pagedUsers();
+
+        return view('livewire.user.index', compact('users'))
+            ->with('i', round($this->getPage() * $users->perPage()));
     }
 }
