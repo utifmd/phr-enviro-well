@@ -4,9 +4,9 @@
             <div class="w-full">
                 <div class="sm:flex space-y-2 md:space-y-0">
                     <div class="sm:flex-auto">
-                        <h1 class="text-base font-semibold leading-6 text-gray-900">{{ $post->title }}</h1>
-                        <p class="mt-2 text-sm text-gray-700">{{ $post->desc }}.</p>
-                        <p class="mt-2 text-xs text-gray-800">Requester: {{ $post->user->email ?? 'deleted account' }}
+                        <h1 class="text-base font-semibold leading-6 text-gray-900">{{ $form->postModel->title }}</h1>
+                        <p class="mt-2 text-sm text-gray-700">{{ $form->postModel->desc }}.</p>
+                        <p class="mt-2 text-xs text-gray-800">Requester: {{ $form->postModel->user->email ?? 'deleted account' }}
                             .</p>
                     </div>
 
@@ -43,7 +43,7 @@
                             </x-slot>
 
                             <x-slot name="content">
-                                @foreach($post->uploadedUrls as $uploaded)
+                                @foreach($form->postModel->uploadedUrls as $uploaded)
                                     <x-dropdown-link target="__blank" :href="$uploaded->url ?? '#'">
                                         <!--wire:navigate>-->
                                         {{ __('Evidence') }}
@@ -70,18 +70,18 @@
                                         </x-dropdown-link>
                                     </button>
                                 @endcan
-                                @canany([\App\Policies\UserPolicy::IS_PHR_ROLE, \App\Policies\PostPolicy::IS_THE_POST_STILL_PENDING], $post)
+                                @canany([\App\Policies\UserPolicy::IS_PHR_ROLE, \App\Policies\PostPolicy::IS_THE_POST_STILL_PENDING], $form->postModel)
                                     <div class="w-full h-3.5"></div>
                                     <x-dropdown-link
                                         wire:navigate
                                         type="button"
-                                        href="{{ route('posts.edit', $post->id) }}"
+                                        href="{{ route('posts.edit', $form->postModel->id) }}"
                                         wire:loading.attr="disabled" class="text-yellow-300 font-bold">
                                         {{ __('Update Request') }}
                                     </x-dropdown-link>
                                     <button
                                         wire:loading.attr="disabled"
-                                        wire:click.prevent="onDeletePressed('{{$post->id}}')"
+                                        wire:click.prevent="onDeletePressed('{{$form->postModel->id}}')"
                                         wire:confirm="Are you sure to delete this Well Loads?"
                                         class="w-full text-start">
                                         <x-dropdown-link class="text-red-600 font-bold">

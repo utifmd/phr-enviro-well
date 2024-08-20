@@ -96,6 +96,9 @@ class PostForm extends Form
         $this->datetime = $this->postModel->datetime ?? '';
         $this->loaded_datetime = $this->postModel->loaded_datetime ??
             collect($this->postModel->workOrders)->map(function ($load) { return $load['created_at']; });
+
+        $this->desc = str_replace(';', ' ', $this->desc);
+        $this->workOrders = collect($this->workOrders)->sortBy('created_at')->values()->all();
     }
 
     public function pushLoadedDatetime(): void
@@ -160,10 +163,20 @@ class PostForm extends Form
         $onComplete($paths);
     }
 
-    public function onUpdateWorkOrders(\Closure $onComplete)
+    public function onUpdateWorkOrders(\Closure $onComplete): void
     {
         $onComplete();
         $this->reset();
+    }
+
+    public function onChangeStateOfWorkOrder(string $woId, array $request): array
+    {
+        foreach ($this->workOrders as $workOrder) {
+            if($workOrder['id'] != $woId) continue;
+
+            $workOrder['status'] = $request['status'];
+        }
+        return $this->workOrders;
     }
 
     public function update(): void

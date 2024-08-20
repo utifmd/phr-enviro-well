@@ -23,17 +23,4 @@ class DashboardExportController extends Controller
         );
         return Excel::download($dashboardExport, $filename);
     }
-
-    public function sheetExport(): BinaryFileResponse
-    {
-        return Excel::create('New file', function($excel) {
-
-            $excel->sheet('New sheet', function($sheet) {
-
-                $sheet->loadView('dashboard');
-
-            });
-
-        });
-    }
 }

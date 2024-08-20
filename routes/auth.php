@@ -48,13 +48,6 @@ Route::middleware('auth')->group(function () {
         ->name('users.edit')
         ->can(UserPolicy::IS_DEV_ROLE);
 
-    /*Volt::route('verify-email', 'pages.auth.verify-email')
-        ->name('verification.notice');
-
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');*/
-
     Volt::route('confirm-password', 'pages.auth.confirm-password')
         ->name('password.confirm');
 
@@ -93,9 +86,15 @@ Route::middleware('auth')->group(function () {
         ->name('well-masters.edit')
         ->can(UserPolicy::IS_PHR_ROLE);
 
-    Route::get('/export-to-excel/sheet', [DashboardExportController::class, 'sheetExport']);
-
     Route::get('/export-to-excel/{datetime}', [DashboardExportController::class, 'export'])
         ->name('dashboard.export')
         ->can(UserPolicy::IS_PHR_ROLE);
+
+    /*Volt::route('verify-email', 'pages.auth.verify-email')
+        ->name('verification.notice');
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');*/
+
 });

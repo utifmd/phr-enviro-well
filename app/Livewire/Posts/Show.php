@@ -19,17 +19,14 @@ class Show extends Component
     private IWorkOrderRepository $workOrderRepository;
     public PostForm $form;
     /*#[Session]*/
-    public string $currentPostId;
+    public ?Post $currentPost;
     public array $woIds;
 
-    public function mount(Post $post)
+    public function mount(Post $post): void
     {
-        $post->desc = str_replace(';', ' ', $post->desc);
-        $post->workOrders = collect($post->workOrders)->sortBy('created_at')->values()->all();
-
         $this->form->setResponsePostModel($post);
         $this->woIds = collect($post->workOrders)->map(function ($wo){ return $wo['id']; })->toArray();
-        $this->currentPostId = $post->id;
+        $this->currentPost = $post;
     }
 
     public function booted(IPostRepository $postRepository, IWorkOrderRepository $workOrderRepository): void
@@ -38,21 +35,23 @@ class Show extends Component
         $this->workOrderRepository = $workOrderRepository;
     }
 
-    public function onChangeStatus(string|array $woIds, string $request)
+    public function onChangeStatus(string|array $woIds, string $request): void
     {
         $this->authorize(UserPolicy::IS_PHR_ROLE, $this->form->postModel);
 
-        $request = ['status' => $request];
-        $this->form->onUpdateWorkOrders(function () use ($woIds, $request){
-            if (is_string($woIds))
-                $this->workOrderRepository->updateWorkOrder($woIds, $request);
-            if (!is_array($woIds)) return;
+        $onComplete = function ($id) use ($request) {
+            $request = ['status' => $request];
 
-            foreach ($woIds as $id) {
-                $this->workOrderRepository->updateWorkOrder($id, $request);
-            }
+            $onUpdateStateOfWorkOrder = $this->form->onChangeStateOfWorkOrder($id, $request);
+            $this->currentPost->workOrders = $onUpdateStateOfWorkOrder;
+            $this->workOrderRepository->updateWorkOrder($id, $request);
+        };
+        $this->form->onUpdateWorkOrders(function () use ($woIds, $onComplete){
+            if (is_string($woIds)) $onComplete($woIds);
+            if (!is_array($woIds)) return;
+            foreach ($woIds as $id) { $onComplete($id); }
         });
-        return $this->redirectRoute('posts.show', ['post' => $this->currentPostId]);
+        $this->form->setResponsePostModel($this->currentPost);
     }
 
     public function onAllowAllRequestPressed(): void
@@ -87,6 +86,6 @@ class Show extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        return view('livewire.post.show', ['post' => $this->form->postModel]);
+        return view('livewire.post.show', ['post' => $this->currentPost]);
     }
 }
