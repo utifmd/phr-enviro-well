@@ -152,4 +152,9 @@ class WellService implements IWellService
         return $this->wellMasterRepository
             ->pagingWellMaster();
     }
+
+    public function removeWellMasterBy(string $id): bool
+    {
+        return $this->wellMasterRepository->delete($id);
+    }
 }

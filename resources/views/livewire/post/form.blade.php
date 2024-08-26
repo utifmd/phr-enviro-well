@@ -141,6 +141,6 @@
         @enderror
     </div>
     <div class="flex items-center gap-4">
-        <x-primary-button wire:loading.class="disabled opacity-50" wire:loading.attr="disabled">Submit</x-primary-button>
+        <x-primary-button wire:loading.class="focus:pointer-events-none" wire:loading.attr="disabled">Submit</x-primary-button>
     </div>
 </div>

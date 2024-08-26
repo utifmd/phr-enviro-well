@@ -9,8 +9,8 @@ use App\Repository\IPostRepository;
 use App\Repository\IWorkOrderRepository;
 use App\Utils\Enums\WorkOrderStatusEnum;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Session;
 use Livewire\Component;
 
 class Show extends Component
@@ -42,11 +42,11 @@ class Show extends Component
         $onComplete = function ($id) use ($request) {
             $request = ['status' => $request];
 
-            $onUpdateStateOfWorkOrder = $this->form->onChangeStateOfWorkOrder($id, $request);
-            $this->currentPost->workOrders = $onUpdateStateOfWorkOrder;
+            $updatedStateOfWorkOrder = $this->form->onChangeStateOfWorkOrder($id, $request);
+            $this->currentPost->workOrders = $updatedStateOfWorkOrder;
             $this->workOrderRepository->updateWorkOrder($id, $request);
         };
-        $this->form->onUpdateWorkOrders(function () use ($woIds, $onComplete){
+        $this->form->onUpdateWorkOrders(function () use ($woIds, $onComplete) {
             if (is_string($woIds)) $onComplete($woIds);
             if (!is_array($woIds)) return;
             foreach ($woIds as $id) { $onComplete($id); }
@@ -68,7 +68,7 @@ class Show extends Component
             WorkOrderStatusEnum::STATUS_REJECTED->value
         );
     }
-    public function onDeletePressed(string $postId)
+    public function onDeletePressed(string $postId): void
     {
         try {
             $this->form->onRemoveEvidences(function (array $paths) {
@@ -84,7 +84,7 @@ class Show extends Component
     }
 
     #[Layout('layouts.app')]
-    public function render()
+    public function render(): View
     {
         return view('livewire.post.show', ['post' => $this->currentPost]);
     }

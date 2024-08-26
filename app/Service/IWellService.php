@@ -26,4 +26,6 @@ interface IWellService
     function removeWellPost(string $wellId): bool;*/
 
     function pagedWellMaster(?string $query, ?int $page): LengthAwarePaginator;
+
+    function removeWellMasterBy(string $id): bool;
 }

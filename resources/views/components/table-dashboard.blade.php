@@ -15,7 +15,7 @@
         </th>
         <th scope="col" rowspan="2"
             class="py-4 px-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
-            AFE Number
+            AFE/ WBS Number
         </th>
         <th scope="col" rowspan="2"
             class="px-3 py-y text-center text-xs font-semibold uppercase tracking-wide text-gray-500">

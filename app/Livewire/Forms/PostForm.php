@@ -97,7 +97,8 @@ class PostForm extends Form
         $this->loaded_datetime = $this->postModel->loaded_datetime ??
             collect($this->postModel->workOrders)->map(function ($load) { return $load['created_at']; });
 
-        $this->desc = str_replace(';', ' ', $this->desc);
+        $this->desc = str_replace(';', ' ', $this->postModel->desc);
+        Log::debug('desc: '. $this->desc);
         $this->workOrders = collect($this->workOrders)->sortBy('created_at')->values()->all();
     }
 

@@ -41,14 +41,14 @@
                     <p class="mt-2 text-sm text-gray-700">{{ $post->desc }}</p>
                     <p class="mt-2 text-xs text-gray-700">{{ $post->timeAgo }}</p>
                     <dl class="divide-y mt-6 divide-gray-100">
-                        {{--<div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Evidence</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                                <img class="w-[150] h-[150]" src="{{$post->uploadedUrls[0]->url ?? '#'}}"
-                                     alt="evidence well">
+                                <div class="flex h-40 w-40 overflow-clip rounded border">
+                                    <img class="w-full h-auto object-cover" src="{{ collect($post->uploadedUrls)->map(function ($upUrl){ return $upUrl['url']; })->first() }}">
+                                </div>
                             </dd>
-                        </div>--}}
-                        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        </div><div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                             <dt class="text-sm font-medium leading-6 text-gray-900">Requester</dt>
                             <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                                 {{ $post->user->email ?? 'deleted account' }}

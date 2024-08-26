@@ -64,34 +64,41 @@
     </div>
     <div>
         <x-input-label for="actual_drmi" :value="__('Actual Drmi')"/>
-        <x-text-input wire:model="form.actual_drmi" id="actual_drmi" name="actual_drmi" type="text" class="mt-1 block w-full" autocomplete="actual_drmi" placeholder="Actual Drmi"/>
+        <x-text-input wire:model="form.actual_drmi" id="actual_drmi" name="actual_drmi" type="date" class="mt-1 block w-full" autocomplete="actual_drmi" placeholder="Actual Drmi"/>
         @error('form.actual_drmi')
             <x-input-error class="mt-2" :messages="$message"/>
         @enderror
     </div>
     <div>
         <x-input-label for="actual_spud" :value="__('Actual Spud')"/>
-        <x-text-input wire:model="form.actual_spud" id="actual_spud" name="actual_spud" type="text" class="mt-1 block w-full" autocomplete="actual_spud" placeholder="Actual Spud"/>
+        <x-text-input wire:model="form.actual_spud" id="actual_spud" name="actual_spud" type="date" class="mt-1 block w-full" autocomplete="actual_spud" placeholder="Actual Spud"/>
         @error('form.actual_spud')
             <x-input-error class="mt-2" :messages="$message"/>
         @enderror
     </div>
     <div>
         <x-input-label for="actual_drmo" :value="__('Actual Drmo')"/>
-        <x-text-input wire:model="form.actual_drmo" id="actual_drmo" name="actual_drmo" type="text" class="mt-1 block w-full" autocomplete="actual_drmo" placeholder="Actual Drmo"/>
+        <x-text-input wire:model="form.actual_drmo" id="actual_drmo" name="actual_drmo" type="date" class="mt-1 block w-full" autocomplete="actual_drmo" placeholder="Actual Drmo"/>
         @error('form.actual_drmo')
             <x-input-error class="mt-2" :messages="$message"/>
         @enderror
     </div>
     <div>
         <x-input-label for="status" :value="__('Status')"/>
-        <x-text-input wire:model="form.status" id="status" name="status" type="text" class="mt-1 block w-full" autocomplete="status" placeholder="Status"/>
+
+        <select name="status" id="status" wire:model="form.status" name="status" class="mt-1 block w-full">
+            <option value="">--- Choose a status ---</option>
+            @foreach(\App\Utils\Enums\WellMasterStatusEnum::cases() as $case)
+                <option value="{{$case->value}}" selected="{{$case == $form->status}}">{{$case->name}}</option>
+            @endforeach
+        </select>
+        {{--<x-text-input wire:model="form.status" id="status" name="status" type="text" class="mt-1 block w-full" autocomplete="status" placeholder="Status"/>--}}
         @error('form.status')
             <x-input-error class="mt-2" :messages="$message"/>
         @enderror
     </div>
 
     <div class="flex items-center gap-4">
-        <x-primary-button>Submit</x-primary-button>
+        <x-primary-button wire:loading.attr="disabled">Submit</x-primary-button>
     </div>
 </div>

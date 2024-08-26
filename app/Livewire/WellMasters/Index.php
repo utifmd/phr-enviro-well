@@ -30,9 +30,9 @@ class Index extends Component
         $this->service->pagedWellMaster($this->querySearch);
     }
 
-    public function delete(WellMaster $wellMaster)
+    public function delete(string $wellMasterId)
     {
-        $wellMaster->delete();
+        $this->service->removeWellMasterBy($wellMasterId);
 
         return $this->redirectRoute('well-masters.index', navigate: true);
     }
