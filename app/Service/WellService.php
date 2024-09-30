@@ -10,6 +10,7 @@ use App\Repository\IUploadedUrlRepository;
 use App\Repository\IUserRepository;
 use App\Repository\IWellMasterRepository;
 use App\Repository\IWorkOrderRepository;
+use App\Utils\Enums\WorkOrderStatusEnum;
 use App\Utils\IUtility;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -18,11 +19,11 @@ use Illuminate\Support\Facades\Log;
 class WellService implements IWellService
 {
     private IPostRepository $postRepository;
-    private IUserRepository $userRepository;
     private IUploadedUrlRepository $uploadedUrlRepository;
     private IWorkOrderRepository $workOrderRepository;
     private IWellMasterRepository $wellMasterRepository;
     private IUtility $utility;
+    private ?string $userId = null;
 
     public function __construct(
         IPostRepository $postRepository,
@@ -32,10 +33,10 @@ class WellService implements IWellService
         IWellMasterRepository $wellMasterRepository,
         IUtility $utility
     ){
+        $this->userId = $userRepository->authenticatedUser()->id;
         $this->postRepository = $postRepository;
         $this->uploadedUrlRepository = $uploadedUrlRepository;
         $this->workOrderRepository = $workOrderRepository;
-        $this->userRepository = $userRepository;
         $this->wellMasterRepository = $wellMasterRepository;
         $this->utility = $utility;
     }
@@ -111,7 +112,7 @@ class WellService implements IWellService
         return $this->postRepository->getPostById($postId);
     }
 
-    public function getCountOfLoadPerMonth(string $year, string $month): ?array
+    public function getRecapPerMonth(string $year, string $month): ?array
     {
         $days = $this->utility->datesOfTheMonth();
         $names = $this->workOrderRepository->getWorkOrderNameByMonth($year, $month)->all();
@@ -137,9 +138,8 @@ class WellService implements IWellService
         ?bool $isBypassed = null, ?string $idsWellName = null): LengthAwarePaginator
     {
         if ($isBypassed) return $this->postRepository->pagedPosts($idsWellName);
-        $user = $this->userRepository->authenticatedUser();
 
-        return $this->postRepository->pagedPostByUserId($user->id);
+        return $this->postRepository->pagedPostByUserId($this->userId);
     }
 
     function pagedWellMaster(?string $query, ?int $page = null): LengthAwarePaginator
@@ -156,5 +156,23 @@ class WellService implements IWellService
     public function removeWellMasterBy(string $id): bool
     {
         return $this->wellMasterRepository->delete($id);
+    }
+    public function getUserLoadSoFar(): array
+    {
+        $statistics = array();
+        $totalCount = $this->postRepository->countLoadPostBy($this->userId);
+        $acceptedCount = $this->postRepository->countLoadPostBy(
+            $this->userId, WorkOrderStatusEnum::STATUS_ACCEPTED->value
+        );
+        $rejectedCount = $this->postRepository->countLoadPostBy(
+            $this->userId, WorkOrderStatusEnum::STATUS_REJECTED->value
+        );
+        $statistics['total_request'] = $totalCount;
+        $statistics['accepted_request'] = $acceptedCount;
+        $statistics['rejected_request'] = $rejectedCount;
+        $statistics['pending_request'] = max(
+            $totalCount - ($rejectedCount + $totalCount), 0
+        );
+        return $statistics;
     }
 }

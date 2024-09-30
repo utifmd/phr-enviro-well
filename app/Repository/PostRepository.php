@@ -42,6 +42,18 @@ class PostRepository implements IPostRepository
         return $post->first();
     }
 
+    function countLoadPostBy(string $userId, ?string $status = null): int
+    {
+        $builder = Post::query()
+            ->leftJoin('work_orders', 'work_orders.post_id', '=', 'posts.id')
+            ->where('posts.user_id', '=', $userId);
+
+        if (!is_null($status)) {
+            $builder->where('work_orders.status', '=', $status);
+        }
+        return $builder->count('posts.id');
+    }
+
     function pagedPosts(?string $idsWellName = null): LengthAwarePaginator
     {
         $builder = Post::query();

@@ -65,8 +65,24 @@
                     <div class="sm:flex sm:items-center">
                         <div class="sm:flex-auto">
                             <h1 class="text-base font-semibold leading-6 text-gray-900">{{ __('Hi, ').(auth()->user()->username ?? 'NA') }}</h1>
-                            <p class="mt-2 text-sm text-gray-700">Welcome to O&M Environment Facilities Operations Well
+                            <p class="mt-2 mb-4 text-sm text-gray-700">Welcome to O&M Environment Facilities Operations Well
                                 Management</p>
+                            @can(\App\Policies\UserPolicy::IS_PT_ROLE)
+                                <div class="md:flex md:justify-around">
+                                    <div class="md:w-1/6 h-[23rem]">
+                                        <livewire:livewire-column-chart
+                                            key="{{ $columnChartModel->reactiveKey() }}"
+                                            :column-chart-model="$columnChartModel"
+                                        />
+                                    </div>
+                                    <div class="md:w-1/2 h-[23rem]">
+                                        <livewire:livewire-pie-chart
+                                            key="{{ $pieChartModel->reactiveKey() }}"
+                                            :pie-chart-model="$pieChartModel"
+                                        />
+                                    </div>
+                                </div>
+                            @endcan
                             @cannot(\App\Policies\UserPolicy::IS_NOT_GUEST_ROLE)
                                 <p class="mt-2 text-sm text-red-600 font-bold">Please contact developer to access the
                                     {{env('APP_NAME')}} app.</p>

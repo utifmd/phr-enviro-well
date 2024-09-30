@@ -9,7 +9,7 @@
             class="py-4 px-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
             Well Number
         </th>
-        <th scope="col" colspan="{{ count($loads['days'] ?? []) }}"
+        <th scope="col" colspan="{{ count($recapPerMonth['days'] ?? []) }}"
             class="py-4 pl-4 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
             #Load VT in {{ ($selectedMonthName ?? 'N/A').' '.($year ?? 'N/A')}}
         </th>
@@ -23,8 +23,8 @@
         </th>
     </tr>
     <tr>
-        @if(isset($loads['days']))
-            @foreach($loads['days'] as $day)
+        @if(isset($recapPerMonth['days']))
+            @foreach($recapPerMonth['days'] as $day)
                 <th scope="col"
                     class="py-4 text-xs text-center font-semibold uppercase tracking-wide text-gray-500">{{ $day }}</th>
             @endforeach
@@ -32,8 +32,8 @@
     </tr>
     </thead>
     <tbody class="divide-y divide-gray-200 bg-white">
-    @if(isset($loads['data']))
-        @foreach($loads['data'] as $load)
+    @if(isset($recapPerMonth['data']))
+        @foreach($recapPerMonth['data'] as $load)
             <tr class="even:bg-gray-50" wire:key="{{ $load['wbs_number'] }}">
                 <td class="whitespace-nowrap pl-4 py-4 text-sm font-semibold text-gray-900">{{ $load['num'].'. ' }}</td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

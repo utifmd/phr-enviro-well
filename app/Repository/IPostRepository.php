@@ -9,6 +9,8 @@ interface IPostRepository
 {
     function addPost(array $request): ?Post;
     function getPostById(string $postId): ?Post;
+    // function getPostByUserId(string $userId): ?Post;
+    function countLoadPostBy(string $userId, ?string $status): int;
     function pagedPosts(?string $idsWellName): LengthAwarePaginator;
     function pagedPostByUserId(string $userId): LengthAwarePaginator;
     function updatePost(string $post_id, array $request): ?Post;

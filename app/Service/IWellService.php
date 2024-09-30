@@ -18,7 +18,8 @@ interface IWellService
         array $workOrdersRequest): ?Post;
 
     function getWellPostById(string $postId): ?Post;
-    function getCountOfLoadPerMonth(string $year, string $month): ?array;
+    function getRecapPerMonth(string $year, string $month): ?array;
+    function getUserLoadSoFar(): array;
 
     function pagedWellPost(?bool $isBypassed, ?string $idsWellName): LengthAwarePaginator;
 

@@ -4,8 +4,12 @@ namespace Tests\Repository;
 
 use App\Models\User;
 use App\Repository\IPostRepository;
+use App\Repository\IWorkOrderRepository;
 use App\Utils\Enums\PostTypeEnum;
 use App\Utils\Enums\UserRoleEnum;
+use App\Utils\Enums\WorkOrderShiftEnum;
+use App\Utils\Enums\WorkOrderStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -13,16 +17,18 @@ use Tests\TestCase;
 class PostRepositoryTest extends TestCase
 {
     private IPostRepository $postRepository;
+    private IWorkOrderRepository $woRepository;
     private ?array $user;
     private ?array $post;
 
     protected function setUp(): void
     {
         parent::setUp();
-        collect(['users', 'posts'])->map(function ($scheme) {
+        collect(['work_orders', 'posts', 'users'])->map(function ($scheme) {
             DB::connection(env('DB_CONNECTION'))->delete("DELETE FROM " . $scheme);
         });
         $this->postRepository = $this->app->make(IPostRepository::class);
+        $this->woRepository = $this->app->make(IWorkOrderRepository::class);
         $this->initialsData();
     }
     private function initialsData(): void
@@ -92,5 +98,80 @@ class PostRepositoryTest extends TestCase
 
         $removedPost = $this->postRepository->getPostById($addedPost['id']);
         self::assertNull($removedPost);
+    }
+
+    public function testCountLoadPostBy()
+    {
+        $request = $this->post;
+        $addedPost = $this->postRepository->addPost($request);
+        $workOrdersRequest = [
+            [
+                'shift' => WorkOrderShiftEnum::NIGHT->value,
+                'is_rig' => false,
+                'status' => WorkOrderStatusEnum::STATUS_ACCEPTED->value,
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-03 13:51:48'),
+                'post_id' => null
+            ],
+            [
+                'shift' => WorkOrderShiftEnum::NIGHT->value,
+                'is_rig' => false,
+                'status' => WorkOrderStatusEnum::STATUS_ACCEPTED->value,
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-03 13:51:48'),
+                'post_id' => null
+            ],
+            [
+                'shift' => WorkOrderShiftEnum::NIGHT->value,
+                'is_rig' => false,
+                'status' => WorkOrderStatusEnum::STATUS_ACCEPTED->value,
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-03 13:51:48'),
+                'post_id' => null
+            ],
+            [
+                'shift' => WorkOrderShiftEnum::NIGHT->value,
+                'is_rig' => false,
+                'status' => WorkOrderStatusEnum::STATUS_ACCEPTED->value,
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-05 13:51:48'),
+                'post_id' => null
+            ],
+            [
+                'shift' => WorkOrderShiftEnum::NIGHT->value,
+                'is_rig' => false,
+                'status' => WorkOrderStatusEnum::STATUS_ACCEPTED->value,
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-03 13:51:48'),
+                'post_id' => null
+            ],
+            [
+                'shift' => WorkOrderShiftEnum::NIGHT->value,
+                'is_rig' => false,
+                'status' => WorkOrderStatusEnum::STATUS_REJECTED->value,
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-03 13:51:48'),
+                'post_id' => null
+            ],
+            [
+                'shift' => WorkOrderShiftEnum::NIGHT->value,
+                'is_rig' => false,
+                'status' => WorkOrderStatusEnum::STATUS_ACCEPTED->value,
+                'ids_wellname' => 'Pematang P11',
+                'created_at' => new Carbon('2024-07-05 13:51:48'),
+                'post_id' => null
+            ],
+        ]; // 7x
+
+        foreach ($workOrdersRequest as $workOrderRequest) {
+            $workOrderRequest['post_id'] = $addedPost['id'];
+            $this->woRepository->addWorkOrder($workOrderRequest);
+        }
+        self::assertNotNull($request['user_id']);
+
+        $loadPostByCount = $this->postRepository->countLoadPostBy(
+            $request['user_id'], WorkOrderStatusEnum::STATUS_ACCEPTED->value
+        );
+        self::assertSame(6, $loadPostByCount);
     }
 }

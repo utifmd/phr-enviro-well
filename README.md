@@ -7,10 +7,10 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Phr TODOS Symlink Needs
+## PHR Symlink
 #### Universal
 ``php artisan storage:link``
-#### Powershell
+#### Powershell (As Administrator)
 ```bash
 New-Item -ItemType SymbolicLink -Path "public\livewire-tmp" -Target "storage\app\livewire-tmp"
 ```
@@ -18,9 +18,6 @@ New-Item -ItemType SymbolicLink -Path "public\livewire-tmp" -Target "storage\app
 ```bash
 ln -s storage\app\livewire-tmp public\livewire-tmp
 ```
-
-- php artisan storage:link
-- INFO  The [C:\Users\Utif Milkedori\Documents\Development\backend\phr-enviro\public\storage] link has been connected to [C:\Users\Utif Milkedori\Documents\Development\backend\phr-enviro\storage\app/public].
 
 ## About Laravel
 

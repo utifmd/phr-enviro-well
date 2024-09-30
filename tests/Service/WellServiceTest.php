@@ -100,7 +100,7 @@ class WellServiceTest extends TestCase
         $this->service->addNewWell(
             $this->post, $this->uploadedUrl, $this->workOrders
         );
-        $countOfLoadPerMonth = $this->service->getCountOfLoadPerMonth(date('Y'), '07');
+        $countOfLoadPerMonth = $this->service->getRecapPerMonth(date('Y'), '07');
         Log::debug(json_encode($countOfLoadPerMonth));
         self::assertTrue(true);
     }

@@ -34,7 +34,7 @@ class DashboardExport implements FromView, WithStyles, ShouldAutoSize
      */
     public function view(): View
     {
-        $loads = $this->service->getCountOfLoadPerMonth($this->year, $this->month);
+        $loads = $this->service->getRecapPerMonth($this->year, $this->month);
         $data = [
             'loads' => $loads,
             'year' => $this->year,
