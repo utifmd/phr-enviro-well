@@ -34,9 +34,9 @@ class DashboardExport implements FromView, WithStyles, ShouldAutoSize
      */
     public function view(): View
     {
-        $loads = $this->service->getRecapPerMonth($this->year, $this->month);
+        $recapPerMonth = $this->service->getRecapPerMonth($this->year, $this->month);
         $data = [
-            'loads' => $loads,
+            'recapPerMonth' => $recapPerMonth,
             'year' => $this->year,
             'selectedMonthName' => $this->utility->nameOfMonth($this->month),
         ];
@@ -55,10 +55,12 @@ class DashboardExport implements FromView, WithStyles, ShouldAutoSize
             ->setHorizontal(Alignment::HORIZONTAL_CENTER)
             ->setVertical(Alignment::VERTICAL_CENTER)
             ->setWrapText(true);
+
         try {
             $dashboard->getBorders()
                 ->getAllBorders()
                 ->setBorderStyle(Border::BORDER_THIN);
+
         } catch (Exception $e) {
 
             Log::debug($e->getMessage());
